@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { ShoppingBag, Menu, X, Sparkles } from 'lucide-react';
+import { ShoppingBag, Menu, X, Sparkles, ShieldCheck } from 'lucide-react';
 import { BRAND } from '../config/brand.config';
 
 interface NavbarProps {
   cartCount: number;
   onOpenCart: () => void;
-  onNavigate: (view: 'home' | 'product' | 'refills' | 'ritual' | 'science' | 'hospitality') => void;
+  onNavigate: (view: 'home' | 'product' | 'refills' | 'ritual' | 'science' | 'hospitality' | 'auth') => void;
   onOpenTrack: () => void;
   onOpenVip?: () => void;
   vipUserPhone?: string | null;
@@ -32,7 +32,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navItem = (label: string, view: 'home' | 'product' | 'refills' | 'ritual' | 'science' | 'hospitality') => (
+  const navItem = (label: string, view: 'home' | 'product' | 'refills' | 'ritual' | 'science' | 'hospitality' | 'auth') => (
     <button
       onClick={() => {
         onNavigate(view);
@@ -156,6 +156,30 @@ export const Navbar: React.FC<NavbarProps> = ({
             Track Order
           </button>
 
+          {/* Security / Sign In Trigger */}
+          <button
+            onClick={() => onNavigate('auth')}
+            style={{
+              background: currentView === 'auth' ? 'rgba(200, 167, 90, 0.15)' : 'transparent',
+              border: currentView === 'auth' ? '1px solid var(--color-champagne)' : '1px solid transparent',
+              borderRadius: 'var(--radius-control)',
+              padding: '7px 10px',
+              display: 'none',
+              alignItems: 'center',
+              gap: '6px',
+              cursor: 'pointer',
+              color: currentView === 'auth' ? 'var(--color-champagne)' : 'var(--color-graphite)',
+              fontSize: '13px',
+              fontWeight: 600,
+              transition: 'var(--transition)',
+            }}
+            className="signin-nav-btn"
+            title="Sign In & Security Portal"
+          >
+            <ShieldCheck size={15} color="#C8A75A" />
+            <span>{vipUserPhone ? 'Account' : 'Sign In'}</span>
+          </button>
+
           {/* VIP Privé FastPass Trigger */}
           <button
             onClick={onOpenVip}
@@ -264,7 +288,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           {navItem('Pod Refills & Packs', 'refills')}
           {navItem('Hygiene Science & Plumbing Safety', 'science')}
           {navItem('Hospitality & Commercial', 'hospitality')}
-          <div style={{ paddingTop: '10px', borderTop: '1px solid var(--border-subtle)' }}>
+          {navItem('Sign In & Security Portal', 'auth')}
+          <div style={{ paddingTop: '10px', borderTop: '1px solid var(--border-subtle)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <button
               onClick={() => {
                 onOpenTrack();
@@ -277,6 +302,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 fontSize: '14px',
                 color: 'var(--color-lilac-deep)',
                 fontWeight: 600,
+                textAlign: 'left',
+                padding: '4px 0',
               }}
             >
               Track Existing Order →
@@ -290,6 +317,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         @media (min-width: 820px) {
           .desktop-nav { display: flex !important; }
           .track-btn { display: inline-flex !important; }
+          .signin-nav-btn { display: inline-flex !important; }
           .mobile-menu-btn { display: none !important; }
         }
       `}</style>

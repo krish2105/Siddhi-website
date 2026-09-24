@@ -26,10 +26,12 @@ import { ArPreviewModal } from './components/ArPreviewModal';
 import { ArchitecturalSpecStudio } from './components/ArchitecturalSpecStudio';
 import { CheckoutView } from './components/CheckoutView';
 import { VipLoginModal } from './components/VipLoginModal';
+import { AuthView } from './components/AuthView';
+import { RagChatbot } from './components/RagChatbot';
 import { PRODUCT, type ProductBundleConfig } from './config/product.config';
 
 export function App() {
-  const [currentView, setCurrentView] = useState<'home' | 'product' | 'refills' | 'ritual' | 'science' | 'hospitality' | 'checkout'>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'product' | 'refills' | 'ritual' | 'science' | 'hospitality' | 'checkout' | 'auth'>('home');
   const [selectedBundle, setSelectedBundle] = useState<ProductBundleConfig>(PRODUCT.bundles[1]); // Deluxe
   const [cartCount, setCartCount] = useState<number>(1);
   const [cartQuantity, setCartQuantity] = useState<number>(1);
@@ -38,6 +40,7 @@ export function App() {
   const [isArOpen, setIsArOpen] = useState<boolean>(false);
   const [isVipOpen, setIsVipOpen] = useState<boolean>(false);
   const [vipUserPhone, setVipUserPhone] = useState<string | null>(null);
+  const [chatbotQuery, setChatbotQuery] = useState<string | null>(null);
   const [policyModalTab, setPolicyModalTab] = useState<'shipping' | 'returns' | 'privacy' | 'terms' | null>(null);
 
   useEffect(() => {
@@ -199,6 +202,7 @@ export function App() {
           <ProductDetailView
             onAddToCart={handleAddToCart}
             onBackToHome={() => setCurrentView('home')}
+            onTriggerChatbot={(query) => setChatbotQuery(query)}
           />
         )}
 
@@ -219,6 +223,28 @@ export function App() {
         {currentView === 'hospitality' && (
           <HospitalityView
             onBackToHome={() => setCurrentView('home')}
+          />
+        )}
+
+        {currentView === 'auth' && (
+          <AuthView
+            onBackToHome={() => {
+              setCurrentView('home');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            onAuthSuccess={(user) => {
+              setVipUserPhone(user.emailOrPhone);
+              try {
+                localStorage.setItem(
+                  'aurelle_vip_user',
+                  JSON.stringify({ phone: user.emailOrPhone, name: user.name, authMethod: user.method })
+                );
+              } catch {
+                // Ignore
+              }
+              setCurrentView('home');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
           />
         )}
 
@@ -298,6 +324,19 @@ export function App() {
         onLoginSuccess={(phone) => {
           setVipUserPhone(phone);
         }}
+      />
+
+      {/* Floating Aurelle AI RAG Concierge Chatbot */}
+      <RagChatbot
+        onOpenCart={() => setIsCartOpen(true)}
+        onExplore3D={scrollToRitual}
+        onOpenVip={() => setIsVipOpen(true)}
+        onOpenProduct={() => {
+          setCurrentView('product');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+        initialOpenQuery={chatbotQuery}
+        onClearInitialQuery={() => setChatbotQuery(null)}
       />
     </div>
   );

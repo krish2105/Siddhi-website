@@ -4,7 +4,7 @@ import { BRAND } from '../config/brand.config';
 
 interface FooterProps {
   onOpenPolicy?: (tab: 'shipping' | 'returns' | 'privacy' | 'terms') => void;
-  onNavigate?: (view: 'home' | 'product' | 'refills' | 'ritual' | 'science' | 'hospitality') => void;
+  onNavigate?: (view: 'home' | 'product' | 'refills' | 'ritual' | 'science' | 'hospitality' | 'auth') => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({ onOpenPolicy, onNavigate }) => {
@@ -169,6 +169,14 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPolicy, onNavigate }) => {
                   style={{ background: 'transparent', border: 'none', color: '#A1A1B2', cursor: 'pointer', padding: 0, fontSize: '13px' }}
                 >
                   Hospitality &amp; B2B Enquiries
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => onNavigate?.('auth')}
+                  style={{ background: 'transparent', border: 'none', color: 'var(--color-champagne)', cursor: 'pointer', padding: 0, fontSize: '13px', fontWeight: 600 }}
+                >
+                  Member Sign In &amp; Security Portal →
                 </button>
               </li>
             </ul>
