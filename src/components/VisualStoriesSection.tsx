@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
-import { Play, Pause, Volume2, VolumeX, X, ShoppingBag, ArrowLeft, ArrowRight, Sparkles } from 'lucide-react';
+import { Play, Pause, Volume2, VolumeX, X, ShoppingBag, ArrowLeft, ArrowRight, Sparkles, UploadCloud, CheckCircle2, Copy } from 'lucide-react';
+import confetti from 'canvas-confetti';
 import { BRAND } from '../config/brand.config';
 
 interface StoryReel {
@@ -14,6 +15,7 @@ interface StoryReel {
   badgeColor?: string;
   caption: string;
   views: string;
+  isUserUploaded?: boolean;
 }
 
 interface VisualStoriesSectionProps {
@@ -22,16 +24,27 @@ interface VisualStoriesSectionProps {
 
 export const VisualStoriesSection: React.FC<VisualStoriesSectionProps> = ({ onOpenCart }) => {
   const [activeModalStory, setActiveModalStory] = useState<StoryReel | null>(null);
-  const [playingCardId, setPlayingCardId] = useState<string | null>('reel-3'); // Card 3 starts active as in reference
+  const [playingCardId, setPlayingCardId] = useState<string | null>('reel-3');
   const [modalPlaying, setModalPlaying] = useState<boolean>(true);
   const [modalMuted, setModalMuted] = useState<boolean>(true);
   const [modalProgress, setModalProgress] = useState<number>(18);
   const [showFloatingPill, setShowFloatingPill] = useState<boolean>(true);
 
+  // Patron Video Upload States
+  const [isUploadOpen, setIsUploadOpen] = useState<boolean>(false);
+  const [uploadStep, setUploadStep] = useState<'form' | 'uploading' | 'success'>('form');
+  const [uploadName, setUploadName] = useState<string>('');
+  const [uploadCity, setUploadCity] = useState<string>('');
+  const [uploadTitle, setUploadTitle] = useState<string>('');
+  const [uploadCaption, setUploadCaption] = useState<string>('');
+  const [uploadFileName, setUploadFileName] = useState<string>('');
+  const [uploadPercent, setUploadPercent] = useState<number>(0);
+  const [copiedVoucher, setCopiedVoucher] = useState<boolean>(false);
+
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const modalVideoRef = useRef<HTMLVideoElement>(null);
 
-  const stories: StoryReel[] = [
+  const [stories, setStories] = useState<StoryReel[]>([
     {
       id: 'reel-1',
       title: 'MESS FREE - 100% Hygienic Cleaning',
@@ -81,7 +94,7 @@ export const VisualStoriesSection: React.FC<VisualStoriesSectionProps> = ({ onOp
       caption: 'Water activates immediate rich antibacterial foaming. No harsh chemical bottles needed.',
       views: '9.6K',
     },
-  ];
+  ]);
 
   const handleScroll = (direction: 'left' | 'right') => {
     if (scrollContainerRef.current) {
@@ -122,6 +135,74 @@ export const VisualStoriesSection: React.FC<VisualStoriesSectionProps> = ({ onOp
     }
   };
 
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setUploadFileName(e.target.files[0].name);
+    }
+  };
+
+  const handleStartUpload = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!uploadName || !uploadCity) return;
+
+    setUploadStep('uploading');
+    setUploadPercent(15);
+
+    const interval = setInterval(() => {
+      setUploadPercent((prev) => {
+        if (prev >= 95) {
+          clearInterval(interval);
+          setTimeout(() => {
+            // Append newly uploaded patron story
+            const newStory: StoryReel = {
+              id: `user-reel-${Date.now()}`,
+              title: uploadTitle || 'Patron Ritual & Review',
+              creator: uploadName.startsWith('@') ? uploadName : `@${uploadName.replace(/\s+/g, '')}`,
+              location: uploadCity,
+              duration: '0:38',
+              videoSrc: '/assets/reel_3.mp4',
+              posterSrc: '/assets/aurelle_inhand_action.jpg',
+              badge: 'COMMUNITY REVIEW',
+              badgeColor: '#2F7D6B',
+              caption: uploadCaption || 'Verified buyer review: Touchless wand feels ultra-hygienic and looks stunning on the wall.',
+              views: '1',
+              isUserUploaded: true,
+            };
+
+            setStories((prevStories) => [newStory, ...prevStories]);
+            setUploadStep('success');
+
+            confetti({
+              particleCount: 100,
+              spread: 60,
+              origin: { y: 0.6 },
+              colors: ['#C8A75A', '#1C1C26', '#2F7D6B'],
+            });
+          }, 600);
+          return 100;
+        }
+        return prev + 20;
+      });
+    }, 250);
+  };
+
+  const copyVoucher = () => {
+    navigator.clipboard.writeText('AURELLE-REEL-500');
+    setCopiedVoucher(true);
+    setTimeout(() => setCopiedVoucher(false), 3000);
+  };
+
+  const closeUploadModal = () => {
+    setIsUploadOpen(false);
+    setUploadStep('form');
+    setUploadName('');
+    setUploadCity('');
+    setUploadTitle('');
+    setUploadCaption('');
+    setUploadFileName('');
+    setUploadPercent(0);
+  };
+
   return (
     <section
       id="visual-stories"
@@ -135,7 +216,7 @@ export const VisualStoriesSection: React.FC<VisualStoriesSectionProps> = ({ onOp
     >
       <div className="container">
         {/* Section Header */}
-        <div style={{ textAlign: 'center', maxWidth: '720px', margin: '0 auto 40px auto' }}>
+        <div style={{ textAlign: 'center', maxWidth: '760px', margin: '0 auto 40px auto' }}>
           <div
             style={{
               display: 'inline-flex',
@@ -169,9 +250,40 @@ export const VisualStoriesSection: React.FC<VisualStoriesSectionProps> = ({ onOp
           >
             Visual Stories Unfold
           </h2>
-          <p style={{ fontSize: '15px', color: 'var(--color-lilac-deep)', lineHeight: 1.6 }}>
+          <p style={{ fontSize: '15px', color: 'var(--color-lilac-deep)', lineHeight: 1.6, marginBottom: '20px' }}>
             Experience touchless hygiene in action. Watch authentic unboxing, click-attachment, and non-scratch cleaning demonstrations from modern bathrooms across India.
           </p>
+
+          {/* User Video Review Upload Trigger Button */}
+          <button
+            onClick={() => setIsUploadOpen(true)}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '10px 20px',
+              borderRadius: '30px',
+              background: '#FFFFFF',
+              border: '1px solid var(--color-champagne)',
+              color: 'var(--color-graphite)',
+              fontSize: '13px',
+              fontWeight: 700,
+              cursor: 'pointer',
+              boxShadow: '0 4px 14px rgba(200, 167, 90, 0.2)',
+              transition: 'all 0.2s ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'var(--color-graphite)';
+              e.currentTarget.style.color = '#FFFFFF';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = '#FFFFFF';
+              e.currentTarget.style.color = 'var(--color-graphite)';
+            }}
+          >
+            <UploadCloud size={16} color="#C8A75A" />
+            <span>Share Your Video Review • Claim ₹500 Reward</span>
+          </button>
         </div>
 
         {/* Carousel Wrapper with Controls */}
@@ -251,7 +363,7 @@ export const VisualStoriesSection: React.FC<VisualStoriesSectionProps> = ({ onOp
             ref={scrollContainerRef}
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(4, minmax(260px, 1fr))',
+              gridTemplateColumns: `repeat(${stories.length}, minmax(260px, 1fr))`,
               gap: '20px',
               overflowX: 'auto',
               padding: '10px 4px 20px 4px',
@@ -289,7 +401,7 @@ export const VisualStoriesSection: React.FC<VisualStoriesSectionProps> = ({ onOp
                     e.currentTarget.style.boxShadow = '0 12px 30px rgba(0,0,0,0.08)';
                   }}
                 >
-                  {/* Real MP4 Video Element (Muted loop for safety & modern browser autoplay) */}
+                  {/* Real MP4 Video Element */}
                   <video
                     src={story.videoSrc}
                     poster={story.posterSrc}
@@ -330,7 +442,7 @@ export const VisualStoriesSection: React.FC<VisualStoriesSectionProps> = ({ onOp
                     <span
                       style={{
                         background: story.badgeColor || '#FED716',
-                        color: '#000000',
+                        color: story.badgeColor === '#2F7D6B' ? '#FFFFFF' : '#000000',
                         fontSize: '11px',
                         fontWeight: 900,
                         padding: '4px 10px',
@@ -396,7 +508,7 @@ export const VisualStoriesSection: React.FC<VisualStoriesSectionProps> = ({ onOp
                     </div>
                   )}
 
-                  {/* Attachment 2 Style Player Bar (Visible on Card 3 or active) */}
+                  {/* Attachment 2 Style Player Bar */}
                   <div
                     style={{
                       position: 'absolute',
@@ -466,6 +578,310 @@ export const VisualStoriesSection: React.FC<VisualStoriesSectionProps> = ({ onOp
         </div>
       </div>
 
+      {/* Patron Video Upload Modal */}
+      {isUploadOpen && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0, 0, 0, 0.75)',
+            backdropFilter: 'blur(8px)',
+            zIndex: 9999,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px',
+          }}
+          onClick={closeUploadModal}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: '100%',
+              maxWidth: '480px',
+              background: '#FFFFFF',
+              borderRadius: '24px',
+              padding: '30px',
+              position: 'relative',
+              boxShadow: '0 25px 60px rgba(0,0,0,0.25)',
+            }}
+          >
+            <button
+              onClick={closeUploadModal}
+              style={{
+                position: 'absolute',
+                top: '20px',
+                right: '20px',
+                background: '#F5F5F8',
+                border: 'none',
+                borderRadius: '50%',
+                width: '32px',
+                height: '32px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+              }}
+            >
+              <X size={16} />
+            </button>
+
+            {uploadStep === 'form' && (
+              <form onSubmit={handleStartUpload}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                  <div
+                    style={{
+                      background: 'rgba(200, 167, 90, 0.15)',
+                      padding: '6px',
+                      borderRadius: '8px',
+                      color: 'var(--color-champagne)',
+                    }}
+                  >
+                    <UploadCloud size={20} />
+                  </div>
+                  <div>
+                    <h3 style={{ fontSize: '18px', fontWeight: 800, color: 'var(--color-graphite)' }}>
+                      Submit Your Video Story
+                    </h3>
+                    <span style={{ fontSize: '12px', color: '#2F7D6B', fontWeight: 700 }}>
+                      Earn ₹500 instant store credit voucher
+                    </span>
+                  </div>
+                </div>
+
+                <p style={{ fontSize: '12px', color: 'var(--color-lilac-deep)', marginBottom: '18px', lineHeight: 1.5 }}>
+                  Share your unboxing, wand snap, or bathroom cleaning routine with fellow patrons. Vertical video (9:16 format) preferred.
+                </p>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginBottom: '20px' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', marginBottom: '6px' }}>
+                      Your Name or Instagram / Social Handle *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={uploadName}
+                      onChange={(e) => setUploadName(e.target.value)}
+                      placeholder="e.g. @priya_hygiene or Priya Sharma"
+                      style={{
+                        width: '100%',
+                        padding: '10px 14px',
+                        borderRadius: '8px',
+                        border: '1px solid var(--border-subtle)',
+                        fontSize: '13px',
+                      }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', marginBottom: '6px' }}>
+                      City & State *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={uploadCity}
+                      onChange={(e) => setUploadCity(e.target.value)}
+                      placeholder="e.g. Mumbai, MH or Bengaluru, KA"
+                      style={{
+                        width: '100%',
+                        padding: '10px 14px',
+                        borderRadius: '8px',
+                        border: '1px solid var(--border-subtle)',
+                        fontSize: '13px',
+                      }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', marginBottom: '6px' }}>
+                      Select Video File (MP4, MOV, max 50MB) *
+                    </label>
+                    <div
+                      style={{
+                        border: '2px dashed var(--border-subtle)',
+                        borderRadius: '12px',
+                        padding: '20px',
+                        textAlign: 'center',
+                        background: '#FAF9F6',
+                        cursor: 'pointer',
+                      }}
+                      onClick={() => document.getElementById('video-upload-input')?.click()}
+                    >
+                      <input
+                        id="video-upload-input"
+                        type="file"
+                        accept="video/mp4,video/quicktime"
+                        onChange={handleFileSelect}
+                        style={{ display: 'none' }}
+                      />
+                      <UploadCloud size={28} color="#C8A75A" style={{ margin: '0 auto 8px auto' }} />
+                      <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-graphite)' }}>
+                        {uploadFileName ? `Selected: ${uploadFileName}` : 'Click to choose video from device'}
+                      </div>
+                      <div style={{ fontSize: '10px', color: 'var(--color-lilac-deep)', marginTop: '4px' }}>
+                        Supports 9:16 vertical smartphone recordings
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', marginBottom: '6px' }}>
+                      Brief Caption & Rating
+                    </label>
+                    <input
+                      type="text"
+                      value={uploadCaption}
+                      onChange={(e) => setUploadCaption(e.target.value)}
+                      placeholder="e.g. The wand looks like an art piece on my marble tiles!"
+                      style={{
+                        width: '100%',
+                        padding: '10px 14px',
+                        borderRadius: '8px',
+                        border: '1px solid var(--border-subtle)',
+                        fontSize: '13px',
+                      }}
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  className="btn-primary"
+                  style={{ width: '100%', padding: '14px', fontSize: '14px', borderRadius: '10px' }}
+                >
+                  Upload & Claim ₹500 Credit
+                </button>
+              </form>
+            )}
+
+            {uploadStep === 'uploading' && (
+              <div style={{ textAlign: 'center', padding: '30px 10px' }}>
+                <div
+                  style={{
+                    width: '60px',
+                    height: '60px',
+                    borderRadius: '50%',
+                    background: 'rgba(200, 167, 90, 0.15)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    margin: '0 auto 16px auto',
+                  }}
+                >
+                  <UploadCloud size={30} color="#C8A75A" />
+                </div>
+                <h3 style={{ fontSize: '18px', fontWeight: 800, marginBottom: '6px' }}>
+                  Transcoding & Uploading Story...
+                </h3>
+                <p style={{ fontSize: '12px', color: 'var(--color-lilac-deep)', marginBottom: '20px' }}>
+                  Processing video codec for instant high-speed mobile playback across India.
+                </p>
+
+                <div
+                  style={{
+                    height: '8px',
+                    background: '#F0EFF5',
+                    borderRadius: '4px',
+                    overflow: 'hidden',
+                    maxWidth: '320px',
+                    margin: '0 auto 12px auto',
+                  }}
+                >
+                  <div
+                    style={{
+                      height: '100%',
+                      width: `${uploadPercent}%`,
+                      background: 'var(--color-champagne)',
+                      transition: 'width 0.2s ease',
+                    }}
+                  />
+                </div>
+                <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-graphite)' }}>
+                  {uploadPercent}% Completed
+                </div>
+              </div>
+            )}
+
+            {uploadStep === 'success' && (
+              <div style={{ textAlign: 'center', padding: '20px 10px' }}>
+                <div
+                  style={{
+                    width: '64px',
+                    height: '64px',
+                    borderRadius: '50%',
+                    background: '#EAF5F2',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    margin: '0 auto 16px auto',
+                  }}
+                >
+                  <CheckCircle2 size={36} color="#2F7D6B" />
+                </div>
+                <h3 style={{ fontSize: '20px', fontWeight: 800, marginBottom: '6px' }}>
+                  Video Published Successfully!
+                </h3>
+                <p style={{ fontSize: '13px', color: 'var(--color-lilac-deep)', marginBottom: '20px', lineHeight: 1.5 }}>
+                  Your story has been added to our live community reel feed. Here is your complimentary ₹500 store voucher:
+                </p>
+
+                {/* Voucher Box */}
+                <div
+                  style={{
+                    background: '#FDF8EA',
+                    border: '1px dashed var(--color-champagne)',
+                    borderRadius: '12px',
+                    padding: '14px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginBottom: '20px',
+                  }}
+                >
+                  <div>
+                    <div style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--color-lilac-deep)', fontWeight: 700 }}>
+                      Voucher Code (₹500 Off Refills):
+                    </div>
+                    <div style={{ fontSize: '18px', fontWeight: 900, color: 'var(--color-graphite)', letterSpacing: '0.06em' }}>
+                      AURELLE-REEL-500
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={copyVoucher}
+                    style={{
+                      padding: '8px 12px',
+                      borderRadius: '8px',
+                      border: '1px solid var(--border-subtle)',
+                      background: '#FFFFFF',
+                      fontSize: '12px',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                    }}
+                  >
+                    <Copy size={13} />
+                    <span>{copiedVoucher ? 'Copied!' : 'Copy'}</span>
+                  </button>
+                </div>
+
+                <button
+                  onClick={closeUploadModal}
+                  className="btn-primary"
+                  style={{ width: '100%', padding: '12px', fontSize: '14px', borderRadius: '10px' }}
+                >
+                  View Story in Carousel
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Full-Screen Vertical Lightbox Reel Modal */}
       {activeModalStory && (
         <div
@@ -511,7 +927,7 @@ export const VisualStoriesSection: React.FC<VisualStoriesSectionProps> = ({ onOp
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             />
 
-            {/* Top Bar with Close & Mute */}
+            {/* Top Bar with Close, Play/Pause & Mute */}
             <div
               style={{
                 position: 'absolute',
@@ -529,15 +945,15 @@ export const VisualStoriesSection: React.FC<VisualStoriesSectionProps> = ({ onOp
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#FFFFFF' }}>
                 <span
                   style={{
-                    background: 'var(--color-champagne)',
-                    color: '#000',
+                    background: activeModalStory.isUserUploaded ? '#2F7D6B' : 'var(--color-champagne)',
+                    color: activeModalStory.isUserUploaded ? '#FFF' : '#000',
                     fontSize: '10px',
                     fontWeight: 800,
                     padding: '3px 8px',
                     borderRadius: '4px',
                   }}
                 >
-                  VERIFIED PATRON
+                  {activeModalStory.isUserUploaded ? 'COMMUNITY REEL' : 'VERIFIED PATRON'}
                 </span>
                 <span style={{ fontSize: '13px', fontWeight: 700 }}>{activeModalStory.creator}</span>
               </div>
@@ -646,7 +1062,7 @@ export const VisualStoriesSection: React.FC<VisualStoriesSectionProps> = ({ onOp
                 {activeModalStory.caption}
               </p>
 
-              {/* Shoppable Product Card (Like Suvaam Quinn Overlay) */}
+              {/* Shoppable Product Card */}
               <div
                 style={{
                   background: '#FFFFFF',
@@ -702,7 +1118,7 @@ export const VisualStoriesSection: React.FC<VisualStoriesSectionProps> = ({ onOp
         </div>
       )}
 
-      {/* Floating Mini Product Pill (As seen in Suvaam Attachment 2 Bottom-Right) */}
+      {/* Floating Mini Product Pill */}
       {showFloatingPill && (
         <div
           style={{
