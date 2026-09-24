@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShoppingBag, Menu, X } from 'lucide-react';
+import { ShoppingBag, Menu, X, Sparkles } from 'lucide-react';
 import { BRAND } from '../config/brand.config';
 
 interface NavbarProps {
@@ -7,6 +7,8 @@ interface NavbarProps {
   onOpenCart: () => void;
   onNavigate: (view: 'home' | 'product' | 'refills' | 'ritual' | 'science' | 'hospitality') => void;
   onOpenTrack: () => void;
+  onOpenVip?: () => void;
+  vipUserPhone?: string | null;
   currentView: string;
 }
 
@@ -15,6 +17,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenCart,
   onNavigate,
   onOpenTrack,
+  onOpenVip,
+  vipUserPhone,
   currentView,
 }) => {
   const [scrolled, setScrolled] = useState(false);
@@ -150,6 +154,42 @@ export const Navbar: React.FC<NavbarProps> = ({
             className="track-btn"
           >
             Track Order
+          </button>
+
+          {/* VIP Privé FastPass Trigger */}
+          <button
+            onClick={onOpenVip}
+            style={{
+              background: vipUserPhone ? 'rgba(47, 125, 107, 0.1)' : 'rgba(200, 167, 90, 0.12)',
+              border: vipUserPhone ? '1px solid #2F7D6B' : '1px solid rgba(200, 167, 90, 0.4)',
+              borderRadius: 'var(--radius-control)',
+              padding: '7px 12px',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              cursor: 'pointer',
+              color: 'var(--color-graphite)',
+              fontSize: '13px',
+              fontWeight: 700,
+              transition: 'var(--transition)',
+            }}
+          >
+            <Sparkles size={14} color={vipUserPhone ? '#2F7D6B' : '#C8A75A'} />
+            <span>{vipUserPhone ? 'Privé Active' : 'VIP Privé'}</span>
+            {!vipUserPhone && (
+              <span
+                style={{
+                  fontSize: '10px',
+                  background: 'var(--color-champagne)',
+                  color: '#000',
+                  padding: '1px 6px',
+                  borderRadius: '4px',
+                  fontWeight: 800,
+                }}
+              >
+                ₹200 Off
+              </span>
+            )}
           </button>
 
           {/* Cart Trigger */}

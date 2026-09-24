@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AnnouncementMarquee } from './components/AnnouncementMarquee';
 import { Navbar } from './components/Navbar';
 import { LuxuryPreloader } from './components/LuxuryPreloader';
 import { Hero } from './components/Hero';
+import { HygieneBenefitsRibbon } from './components/HygieneBenefitsRibbon';
 import { HowItWorks } from './components/HowItWorks';
 import { ExplodedAnatomy } from './components/ExplodedAnatomy';
 import { LuxuryGallery } from './components/LuxuryGallery';
@@ -24,6 +25,7 @@ import { PoliciesModal } from './components/PoliciesModal';
 import { ArPreviewModal } from './components/ArPreviewModal';
 import { ArchitecturalSpecStudio } from './components/ArchitecturalSpecStudio';
 import { CheckoutView } from './components/CheckoutView';
+import { VipLoginModal } from './components/VipLoginModal';
 import { PRODUCT, type ProductBundleConfig } from './config/product.config';
 
 export function App() {
@@ -34,7 +36,31 @@ export function App() {
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
   const [isTrackOpen, setIsTrackOpen] = useState<boolean>(false);
   const [isArOpen, setIsArOpen] = useState<boolean>(false);
+  const [isVipOpen, setIsVipOpen] = useState<boolean>(false);
+  const [vipUserPhone, setVipUserPhone] = useState<string | null>(null);
   const [policyModalTab, setPolicyModalTab] = useState<'shipping' | 'returns' | 'privacy' | 'terms' | null>(null);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('aurelle_vip_user');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed.phone) setVipUserPhone(parsed.phone);
+      } else {
+        // Auto-show VIP offer after 5s once per session
+        const shown = sessionStorage.getItem('aurelle_vip_prompt_shown');
+        if (!shown) {
+          const timer = setTimeout(() => {
+            setIsVipOpen(true);
+            sessionStorage.setItem('aurelle_vip_prompt_shown', 'true');
+          }, 5000);
+          return () => clearTimeout(timer);
+        }
+      }
+    } catch {
+      // Ignore storage restrictions
+    }
+  }, []);
 
   const handleSelectBundle = (bundle: ProductBundleConfig) => {
     setSelectedBundle(bundle);
@@ -104,6 +130,8 @@ export function App() {
       <Navbar
         cartCount={cartCount}
         onOpenCart={() => setIsCartOpen(true)}
+        onOpenVip={() => setIsVipOpen(true)}
+        vipUserPhone={vipUserPhone}
         onNavigate={(view) => {
           if (view === 'ritual') {
             scrollToRitual();
@@ -127,6 +155,9 @@ export function App() {
               onViewProduct={() => setCurrentView('product')}
               onOpenAr={() => setIsArOpen(true)}
             />
+
+            {/* 1b. Architectural Hygiene Specification 4-Pillar Ribbon */}
+            <HygieneBenefitsRibbon />
 
             {/* 2. The 3-Step Interactive Touchless Ritual */}
             <HowItWorks />
@@ -224,6 +255,8 @@ export function App() {
         onClose={() => setIsCartOpen(false)}
         selectedBundle={selectedBundle}
         quantity={cartQuantity}
+        isVipMember={!!vipUserPhone}
+        onOpenVip={() => setIsVipOpen(true)}
         onUpdateQuantity={(newQty) => {
           setCartQuantity(newQty);
           setCartCount(newQty);
@@ -255,6 +288,15 @@ export function App() {
       <ArPreviewModal
         isOpen={isArOpen}
         onClose={() => setIsArOpen(false)}
+      />
+
+      {/* 1-Click Aurelle Privé VIP FastPass Login & Member Offers Modal */}
+      <VipLoginModal
+        isOpen={isVipOpen}
+        onClose={() => setIsVipOpen(false)}
+        onLoginSuccess={(phone) => {
+          setVipUserPhone(phone);
+        }}
       />
     </div>
   );

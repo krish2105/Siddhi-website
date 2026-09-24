@@ -12,6 +12,8 @@ interface CartDrawerProps {
   quantity: number;
   onUpdateQuantity: (newQty: number) => void;
   onProceedToCheckout?: () => void;
+  isVipMember?: boolean;
+  onOpenVip?: () => void;
 }
 
 interface CartAddon {
@@ -30,6 +32,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   quantity,
   onUpdateQuantity,
   onProceedToCheckout,
+  isVipMember = false,
+  onOpenVip,
 }) => {
   const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
   const [orderPlaced, setOrderPlaced] = useState(false);
@@ -86,8 +90,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
   // ₹100 instant prepaid UPI discount like Suvaam reference
   const upiDiscount = paymentMethod === 'upi' ? 100 : 0;
+  // ₹200 instant Aurelle Privé VIP welcome credit
+  const vipDiscount = isVipMember ? 200 : 0;
 
-  const subtotal = Math.max(0, selectedBundle.price * quantity + addonsTotal - upiDiscount);
+  const subtotal = Math.max(0, selectedBundle.price * quantity + addonsTotal - upiDiscount - vipDiscount);
   const regularTotal = selectedBundle.originalPrice * quantity + addonsOriginalTotal;
   const totalSavings = regularTotal - subtotal;
 
@@ -261,6 +267,51 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
           /* Normal Cart Drawer Items View (Dense, high-converting, ZERO empty space) */
           <div style={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between', overflow: 'hidden' }}>
             <div style={{ padding: '20px 24px', overflowY: 'auto', flex: 1 }}>
+              {/* VIP Membership Perk Card */}
+              <div
+                style={{
+                  background: isVipMember ? 'rgba(47, 125, 107, 0.08)' : 'rgba(200, 167, 90, 0.12)',
+                  border: isVipMember ? '1px solid #2F7D6B' : '1px dashed var(--color-champagne)',
+                  borderRadius: '12px',
+                  padding: '10px 14px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  marginBottom: '16px',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Sparkles size={16} color={isVipMember ? '#2F7D6B' : '#C8A75A'} />
+                  <div>
+                    <div style={{ fontSize: '12px', fontWeight: 800, color: 'var(--color-graphite)' }}>
+                      {isVipMember ? 'Aurelle Privé VIP Active' : 'Aurelle Privé 1-Click Pass'}
+                    </div>
+                    <div style={{ fontSize: '11px', color: 'var(--color-lilac-deep)' }}>
+                      {isVipMember ? '₹200 Welcome Gift Applied • Priority Air Queue' : 'Unlock instant ₹200 off & fast 1-click checkout'}
+                    </div>
+                  </div>
+                </div>
+
+                {!isVipMember && onOpenVip && (
+                  <button
+                    onClick={onOpenVip}
+                    style={{
+                      background: 'var(--color-graphite)',
+                      color: '#FFFFFF',
+                      border: 'none',
+                      padding: '5px 12px',
+                      borderRadius: '6px',
+                      fontSize: '11px',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    Unlock ₹200
+                  </button>
+                )}
+              </div>
+
               {/* 1. Milestone Rewards Bar */}
               <div
                 style={{
@@ -687,6 +738,13 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '6px' }}>
                   <span style={{ color: '#2F7D6B', fontWeight: 600 }}>Prepaid UPI Instant Discount:</span>
                   <span style={{ color: '#2F7D6B', fontWeight: 700 }}>-₹100</span>
+                </div>
+              )}
+
+              {isVipMember && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '6px' }}>
+                  <span style={{ color: 'var(--color-champagne)', fontWeight: 700 }}>Aurelle Privé VIP Credit:</span>
+                  <span style={{ color: 'var(--color-champagne)', fontWeight: 800 }}>-₹200</span>
                 </div>
               )}
 
