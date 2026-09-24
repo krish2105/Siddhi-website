@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { AnnouncementMarquee } from './components/AnnouncementMarquee';
 import { Navbar } from './components/Navbar';
 import { LuxuryPreloader } from './components/LuxuryPreloader';
 import { Hero } from './components/Hero';
 import { HowItWorks } from './components/HowItWorks';
 import { ExplodedAnatomy } from './components/ExplodedAnatomy';
 import { LuxuryGallery } from './components/LuxuryGallery';
+import { VisualStoriesSection } from './components/VisualStoriesSection';
 import { HouseholdCalculator } from './components/HouseholdCalculator';
 import { BundleSelector } from './components/BundleSelector';
 import { ComparisonTable } from './components/ComparisonTable';
@@ -95,6 +97,9 @@ export function App() {
       {/* Award-Winning Boutique Entry Reveal / Refresh Preloader */}
       <LuxuryPreloader />
 
+      {/* Top Running Announcement Marquee ("The Running Things" from Suvaam Reference) */}
+      <AnnouncementMarquee />
+
       {/* Global Navigation Header */}
       <Navbar
         cartCount={cartCount}
@@ -131,6 +136,9 @@ export function App() {
 
             {/* 4. Architectural Photography & Editorial Unboxing Gallery */}
             <LuxuryGallery />
+
+            {/* 4b. Visual Stories Unfold: Vertical UGC Video Reels (Suvaam Reference) */}
+            <VisualStoriesSection onOpenCart={() => setIsCartOpen(true)} />
 
             {/* 5. Household Bathrooms & Refill Savings Calculator */}
             <HouseholdCalculator onSelectBundle={handleSelectBundleById} />
