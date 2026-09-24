@@ -1,0 +1,265 @@
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..700&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Plus+Jakarta+Sans:wght@400..700&display=swap');
+
+:root {
+  /* MASTER PROMPT PALETTE TOKENS */
+  --color-porcelain: #F5F5F8; /* Page background */
+  --color-mist: #DAD9E8;      /* Hardware lavender-grey, cards */
+  --color-graphite: #1C1C26;  /* High contrast charcoal text */
+  --color-champagne: #C8A75A; /* Metallic gold trim & slide latch */
+  --color-lilac-deep: #6D6A8C;/* Muted secondary text & borders */
+  --color-signal: #2F7D6B;    /* In-stock, success, verified */
+
+  /* Legacy & Semantic Mappings */
+  --bg-primary: var(--color-porcelain);
+  --bg-secondary: #EBEBF2;
+  --bg-card: rgba(255, 255, 255, 0.85);
+  --bg-card-hover: #FFFFFF;
+  --bg-dark: var(--color-graphite);
+  --bg-dark-card: #272733;
+
+  --text-main: var(--color-graphite);
+  --text-muted: var(--color-lilac-deep);
+  --text-light: #9B98B3;
+  --text-white: #FFFFFF;
+
+  --gold-primary: var(--color-champagne);
+  --gold-light: #DFCA88;
+  --gold-dark: #9E7D32;
+  --gold-gradient: linear-gradient(135deg, #DFCA88 0%, #C8A75A 50%, #9E7D32 100%);
+  --gold-subtle: rgba(200, 167, 90, 0.12);
+  --gold-border: rgba(200, 167, 90, 0.4);
+
+  --green-badge: var(--color-signal);
+  --green-bg: #EAF5F2;
+
+  /* Elevation & Borders */
+  --border-subtle: rgba(28, 28, 38, 0.08);
+  --border-glass: rgba(255, 255, 255, 0.7);
+  --shadow-sm: 0 4px 12px rgba(28, 28, 38, 0.04);
+  --shadow-md: 0 10px 30px rgba(28, 28, 38, 0.07);
+  --shadow-xl: 0 24px 60px rgba(28, 28, 38, 0.12);
+  --shadow-gold: 0 8px 30px rgba(200, 167, 90, 0.28);
+
+  /* Master Prompt Radius System */
+  --radius-sm: 6px;
+  --radius-control: 10px; /* 10px for controls */
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-hero: 28px;    /* 28px for hero frame & media */
+  --radius-full: 9999px;
+
+  /* Fonts */
+  --font-body: 'Instrument Sans', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'Bricolage Grotesque', 'Space Grotesk', sans-serif;
+
+  --transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-family: var(--font-body);
+  background-color: var(--color-porcelain);
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  overflow-x: hidden;
+  line-height: 1.6;
+  background-color: var(--color-porcelain);
+}
+
+/* Accessibility Focus Ring in Champagne */
+:focus-visible {
+  outline: 2px solid var(--color-champagne);
+  outline-offset: 3px;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-porcelain);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-mist);
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-champagne);
+}
+
+/* Typography Helpers */
+h1, h2, h3, h4, h5, .font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.03em;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.15;
+}
+
+.text-gold {
+  background: var(--gold-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Glassmorphism Containers */
+.glass-panel {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-hero);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.glass-panel:hover {
+  box-shadow: var(--shadow-md);
+}
+
+/* Master Layout Container */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Buttons */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--color-graphite);
+  color: #FFFFFF;
+  font-weight: 600;
+  font-size: 15px;
+  padding: 14px 28px;
+  border-radius: var(--radius-control);
+  border: 1px solid var(--color-champagne);
+  cursor: pointer;
+  text-decoration: none;
+  transition: var(--transition);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover {
+  background: #000000;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-gold);
+}
+
+.btn-gold {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--gold-gradient);
+  color: #1C1C26;
+  font-weight: 700;
+  font-size: 15px;
+  padding: 14px 28px;
+  border-radius: var(--radius-control);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: var(--transition);
+  box-shadow: var(--shadow-gold);
+}
+
+.btn-gold:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #FFFFFF;
+  color: var(--text-main);
+  font-weight: 600;
+  font-size: 15px;
+  padding: 14px 24px;
+  border-radius: var(--radius-control);
+  border: 1px solid var(--border-subtle);
+  cursor: pointer;
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.btn-secondary:hover {
+  background: var(--color-mist);
+  border-color: var(--color-champagne);
+}
+
+/* Badges */
+.pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: rgba(200, 167, 90, 0.12);
+  border: 1px solid var(--gold-border);
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-main);
+}
+
+.stock-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: var(--green-bg);
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--green-badge);
+}
+
+/* Cart Drawer */
+.cart-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  max-width: 480px;
+  background: #FFFFFF;
+  z-index: 1000;
+  box-shadow: var(--shadow-xl);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(28, 28, 38, 0.45);
+  backdrop-filter: blur(4px);
+  z-index: 999;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 16px;
+  }
+}
