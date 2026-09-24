@@ -211,6 +211,25 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPolicy, onNavigate }) => {
                   Terms of Service
                 </button>
               </li>
+              <li>
+                <a
+                  href="/Aurelle_Official_Quotation_INR.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    color: 'var(--color-champagne)',
+                    textDecoration: 'none',
+                    fontSize: '13px',
+                    fontWeight: 600,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                  }}
+                >
+                  <span>Commercial Proposal &amp; Quotation (PDF)</span>
+                  <span style={{ fontSize: '10px', background: 'rgba(200, 167, 90, 0.2)', padding: '1px 6px', borderRadius: '4px' }}>₹ INR</span>
+                </a>
+              </li>
             </ul>
           </div>
 

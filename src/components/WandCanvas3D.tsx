@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { RotateCw, Layers, Move3d, ArrowDownCircle, Sun, Moon, Volume2, VolumeX } from 'lucide-react';
-import { playMechanicalClick, playSlideSound, playEjectSound } from '../lib/sound';
+import { RotateCw, Layers, Move3d, ArrowDownCircle, Sun, Moon } from 'lucide-react';
 
 interface WandCanvas3DProps {
   onInteract?: () => void;
@@ -15,7 +14,6 @@ export const WandCanvas3D: React.FC<WandCanvas3DProps> = ({ onInteract }) => {
   const [autoRotate, setAutoRotate] = useState(true);
   const [ambientMode, setAmbientMode] = useState<'day' | 'night'>('day');
   const [wallFinish, setWallFinish] = useState<WallFinish>('travertine');
-  const [soundEnabled, setSoundEnabled] = useState(true);
   const [activeHotspot, setActiveHotspot] = useState<string | null>(null);
 
   // Mutable refs for Three.js animation loop without re-triggering scene re-creation
@@ -536,11 +534,6 @@ export const WandCanvas3D: React.FC<WandCanvas3DProps> = ({ onInteract }) => {
   }, [onInteract]); // Only runs once on mount!
 
   const handleModeChange = (mode: 'docked' | 'exploded' | 'action') => {
-    if (soundEnabled) {
-      if (mode === 'action') playEjectSound();
-      else if (mode === 'exploded') playSlideSound();
-      else playMechanicalClick();
-    }
     setViewMode(mode);
     if (mode === 'action') {
       setTimeout(() => {
@@ -583,7 +576,7 @@ export const WandCanvas3D: React.FC<WandCanvas3DProps> = ({ onInteract }) => {
         title="Click and drag to rotate in 3D"
       />
 
-      {/* Top Floating Controls: Day/Night Ambient Toggle & Sound Switch */}
+      {/* Top Floating Controls: Day/Night Ambient Toggle */}
       <div
         style={{
           position: 'absolute',
@@ -597,7 +590,6 @@ export const WandCanvas3D: React.FC<WandCanvas3DProps> = ({ onInteract }) => {
       >
         <button
           onClick={() => {
-            if (soundEnabled) playMechanicalClick();
             setAmbientMode(ambientMode === 'day' ? 'night' : 'day');
           }}
           title={ambientMode === 'day' ? 'Switch to Evening Warm Glow' : 'Switch to Daylight Travertine'}
@@ -619,25 +611,6 @@ export const WandCanvas3D: React.FC<WandCanvas3DProps> = ({ onInteract }) => {
         >
           {ambientMode === 'day' ? <Sun size={12} color="#D97706" /> : <Moon size={12} color="#FFD27D" />}
           <span>{ambientMode === 'day' ? 'Daylight' : 'Evening Ambience'}</span>
-        </button>
-
-        <button
-          onClick={() => setSoundEnabled(!soundEnabled)}
-          title={soundEnabled ? 'Mute Haptic Sound' : 'Enable Haptic Audio'}
-          style={{
-            padding: '6px',
-            borderRadius: '50%',
-            background: ambientMode === 'day' ? 'rgba(255, 255, 255, 0.94)' : 'rgba(40, 40, 52, 0.94)',
-            border: '1px solid var(--border-subtle)',
-            color: 'var(--color-graphite)',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-          }}
-        >
-          {soundEnabled ? <Volume2 size={13} color="#2F7D6B" /> : <VolumeX size={13} color="#9B98B3" />}
         </button>
       </div>
 
@@ -665,7 +638,6 @@ export const WandCanvas3D: React.FC<WandCanvas3DProps> = ({ onInteract }) => {
           <button
             key={finish}
             onClick={() => {
-              if (soundEnabled) playMechanicalClick();
               setWallFinish(finish);
             }}
             style={{
@@ -809,7 +781,6 @@ export const WandCanvas3D: React.FC<WandCanvas3DProps> = ({ onInteract }) => {
 
         <button
           onClick={() => {
-            if (soundEnabled) playMechanicalClick();
             setAutoRotate(!autoRotate);
           }}
           title={autoRotate ? 'Pause 360° rotation' : 'Start 360° rotation'}

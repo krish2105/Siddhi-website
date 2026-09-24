@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Navbar } from './components/Navbar';
+import { LuxuryPreloader } from './components/LuxuryPreloader';
 import { Hero } from './components/Hero';
 import { HowItWorks } from './components/HowItWorks';
 import { ExplodedAnatomy } from './components/ExplodedAnatomy';
@@ -91,6 +92,9 @@ export function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 text-zinc-900" style={{ background: 'var(--color-porcelain)' }}>
+      {/* Award-Winning Boutique Entry Reveal / Refresh Preloader */}
+      <LuxuryPreloader />
+
       {/* Global Navigation Header */}
       <Navbar
         cartCount={cartCount}
