@@ -3,7 +3,7 @@ import { ArrowLeft, ShieldCheck, Truck, Check, QrCode, CreditCard, Banknote, Spa
 import { type ProductBundleConfig } from '../config/product.config';
 import { BRAND } from '../config/brand.config';
 import { formatINR } from '../lib/format';
-import { playMechanicalClick, playSlideSound } from '../lib/sound';
+import { playMechanicalClick, playSlideSound, playChime } from '../lib/sound';
 
 interface CheckoutViewProps {
   selectedBundle: ProductBundleConfig;
@@ -57,6 +57,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
       setGeneratedOrderId(orderId);
       setIsSubmitting(false);
       setIsSuccess(true);
+      playChime();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }, 1200);
   };
