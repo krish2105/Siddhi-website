@@ -214,40 +214,76 @@ export const WandCanvas3D: React.FC<WandCanvas3DProps> = ({ onInteract }) => {
     mainAnchor.add(pedRim);
 
     // --- CADDY CONTAINER (WALL-DOCK) ---
+    // Matches the exact physical product: rectangular dock with Champagne Gold perimeter bezel
     const caddyGroup = new THREE.Group();
     caddyGroup.position.set(0, -0.65, 0);
 
-    const caddyGeo = new THREE.CylinderGeometry(0.72, 0.64, 1.45, 32);
-    caddyGeo.scale(1.15, 1, 0.72);
-    const caddyMesh = new THREE.Mesh(caddyGeo, mistBodyMat);
+    // Main Rectangular Caddy Body
+    const caddyBodyGeo = new THREE.BoxGeometry(1.18, 1.62, 0.72, 2, 4, 2);
+    const caddyMesh = new THREE.Mesh(caddyBodyGeo, mistBodyMat);
     caddyMesh.castShadow = true;
     caddyMesh.receiveShadow = true;
     caddyGroup.add(caddyMesh);
 
-    // Champagne Gold PVD Trim Rims
-    const goldRimGeo = new THREE.TorusGeometry(0.75, 0.038, 16, 32);
-    goldRimGeo.scale(1.12, 0.7, 1);
-    goldRimGeo.rotateX(Math.PI / 2);
-    const goldRimMesh = new THREE.Mesh(goldRimGeo, champagneGoldMat);
-    goldRimMesh.position.y = 0.72;
-    goldRimMesh.castShadow = true;
-    caddyGroup.add(goldRimMesh);
+    // Recessed Front Alabaster Faceplate
+    const faceplateGeo = new THREE.BoxGeometry(1.0, 1.44, 0.04);
+    const faceplateMesh = new THREE.Mesh(faceplateGeo, mistBodyMat);
+    faceplateMesh.position.set(0, 0, 0.36);
+    faceplateMesh.receiveShadow = true;
+    caddyGroup.add(faceplateMesh);
 
-    const goldBaseGeo = new THREE.TorusGeometry(0.66, 0.025, 16, 32);
-    goldBaseGeo.scale(1.12, 0.7, 1);
-    goldBaseGeo.rotateX(Math.PI / 2);
-    const goldBaseMesh = new THREE.Mesh(goldBaseGeo, champagneGoldMat);
-    goldBaseMesh.position.y = -0.72;
-    caddyGroup.add(goldBaseMesh);
+    // Signature Front Champagne Gold Perimeter Frame (Photo 3 bezel)
+    const goldFrameGroup = new THREE.Group();
+    const frameThickness = 0.042;
+    const frameDepth = 0.045;
 
-    // Front Vertical Champagne Gold Inlay Stripe
-    const inlayGeo = new THREE.BoxGeometry(0.04, 1.35, 0.02);
-    const inlayMesh = new THREE.Mesh(inlayGeo, champagneGoldMat);
-    inlayMesh.position.set(0, 0, 0.38);
-    caddyGroup.add(inlayMesh);
+    // Top & Bottom Gold Bars
+    const hBarGeo = new THREE.BoxGeometry(1.06, frameThickness, frameDepth);
+    const topBar = new THREE.Mesh(hBarGeo, champagneGoldMat);
+    topBar.position.set(0, 0.72, 0.38);
+    topBar.castShadow = true;
+    goldFrameGroup.add(topBar);
+
+    const bottomBar = new THREE.Mesh(hBarGeo, champagneGoldMat);
+    bottomBar.position.set(0, -0.72, 0.38);
+    bottomBar.castShadow = true;
+    goldFrameGroup.add(bottomBar);
+
+    // Left & Right Gold Bars
+    const vBarGeo = new THREE.BoxGeometry(frameThickness, 1.48, frameDepth);
+    const leftBar = new THREE.Mesh(vBarGeo, champagneGoldMat);
+    leftBar.position.set(-0.51, 0, 0.38);
+    leftBar.castShadow = true;
+    goldFrameGroup.add(leftBar);
+
+    const rightBar = new THREE.Mesh(vBarGeo, champagneGoldMat);
+    rightBar.position.set(0.51, 0, 0.38);
+    rightBar.castShadow = true;
+    goldFrameGroup.add(rightBar);
+
+    // 4 Corner Gold Joints
+    const cornerGeo = new THREE.SphereGeometry(0.024, 16, 16);
+    const corners = [
+      [-0.51, 0.72, 0.38],
+      [0.51, 0.72, 0.38],
+      [-0.51, -0.72, 0.38],
+      [0.51, -0.72, 0.38],
+    ];
+    corners.forEach(([cx, cy, cz]) => {
+      const cornerMesh = new THREE.Mesh(cornerGeo, champagneGoldMat);
+      cornerMesh.position.set(cx, cy, cz);
+      goldFrameGroup.add(cornerMesh);
+    });
+    caddyGroup.add(goldFrameGroup);
+
+    // Top Docking Slot Opening for the Wand
+    const slotGeo = new THREE.BoxGeometry(0.38, 0.08, 0.22);
+    const slotMesh = new THREE.Mesh(slotGeo, gunmetalMat);
+    slotMesh.position.set(0, 0.81, 0);
+    caddyGroup.add(slotMesh);
 
     // Wall Tile Backing Plate (Swappable finish)
-    const wallPlateGeo = new THREE.BoxGeometry(1.4, 1.6, 0.08);
+    const wallPlateGeo = new THREE.BoxGeometry(1.4, 1.7, 0.08);
     const wallPlateMat = new THREE.MeshStandardMaterial({
       color: 0xd6cfc0,
       roughness: 0.85,
@@ -261,55 +297,73 @@ export const WandCanvas3D: React.FC<WandCanvas3DProps> = ({ onInteract }) => {
     mainAnchor.add(caddyGroup);
 
     // --- THE TELESCOPING WAND HANDLE ---
+    // Matches Photo 3: Flat-rectangular rod with top eyelet and mid-shaft gold thumb slider
     const wandGroup = new THREE.Group();
     wandGroupRef.current = wandGroup;
     wandGroup.position.set(0, 0.12, 0);
 
-    // Cylindrical Handle
-    const handleGeo = new THREE.CylinderGeometry(0.12, 0.14, 2.05, 24);
-    handleGeo.scale(1, 1, 0.78);
+    // Flat-Rectangular Handle Body (Photo 3 shape)
+    const handleGeo = new THREE.BoxGeometry(0.24, 2.22, 0.12, 2, 8, 2);
     const handleMesh = new THREE.Mesh(handleGeo, wandHandleMat);
     handleMesh.castShadow = true;
-    handleMesh.position.y = 0.98;
+    handleMesh.position.y = 1.05;
     wandGroup.add(handleMesh);
 
-    // Top Hanging / Ergonomic Ring (Champagne Gold)
-    const loopGeo = new THREE.TorusGeometry(0.13, 0.03, 16, 24);
-    loopGeo.scale(1, 1.4, 1);
-    const loopMesh = new THREE.Mesh(loopGeo, champagneGoldMat);
-    loopMesh.position.y = 2.08;
+    // Top Hanging / Suspension Ring (Circular Eyelet in the tip - Photo 3)
+    const loopGeo = new THREE.TorusGeometry(0.065, 0.032, 16, 24);
+    const loopMesh = new THREE.Mesh(loopGeo, wandHandleMat);
+    loopMesh.position.set(0, 2.16, 0);
+    loopMesh.castShadow = true;
     wandGroup.add(loopMesh);
 
-    // Slide-Latch Track (Obsidian)
-    const trackGeo = new THREE.BoxGeometry(0.12, 0.46, 0.04);
+    // Inner Gold Eyelet Inlay Rim
+    const loopInnerGeo = new THREE.TorusGeometry(0.065, 0.015, 16, 24);
+    const loopInnerMesh = new THREE.Mesh(loopInnerGeo, champagneGoldMat);
+    loopInnerMesh.position.set(0, 2.16, 0);
+    wandGroup.add(loopInnerMesh);
+
+    // Recessed Gold Slide-Latch Well
+    const trackGeo = new THREE.BoxGeometry(0.15, 0.44, 0.03);
     const trackMesh = new THREE.Mesh(trackGeo, gunmetalMat);
-    trackMesh.position.set(0, 1.02, 0.12);
+    trackMesh.position.set(0, 1.05, 0.065);
     wandGroup.add(trackMesh);
 
-    // Champagne Gold Ribbed Slider Button
-    const sliderGeo = new THREE.BoxGeometry(0.09, 0.18, 0.08);
+    // Champagne Gold Mechanical Thumb-Slider (Photo 3)
+    const sliderGroup = new THREE.Group();
+    sliderGroup.position.set(0, 1.06, 0.08);
+
+    const sliderGeo = new THREE.BoxGeometry(0.12, 0.18, 0.06);
     const sliderMesh = new THREE.Mesh(sliderGeo, sliderGoldMat);
-    sliderMesh.position.set(0, 1.06, 0.15);
     sliderMesh.castShadow = true;
-    sliderBtnRef.current = sliderMesh;
-    wandGroup.add(sliderMesh);
+    sliderGroup.add(sliderMesh);
+
+    // 3 Tactile Horizontal Grip Ridges on the Gold Button
+    for (let r = -0.04; r <= 0.04; r += 0.04) {
+      const ridgeGeo = new THREE.BoxGeometry(0.08, 0.015, 0.02);
+      const ridgeMesh = new THREE.Mesh(ridgeGeo, champagneGoldMat);
+      ridgeMesh.position.set(0, r, 0.035);
+      sliderGroup.add(ridgeMesh);
+    }
+
+    sliderBtnRef.current = sliderGroup as unknown as THREE.Mesh;
+    wandGroup.add(sliderGroup);
 
     // Metallic Collar Ring
-    const collarGeo = new THREE.CylinderGeometry(0.13, 0.13, 0.08, 24);
+    const collarGeo = new THREE.BoxGeometry(0.24, 0.08, 0.14);
     const collarMesh = new THREE.Mesh(collarGeo, champagneGoldMat);
     collarMesh.position.y = -0.05;
+    collarMesh.castShadow = true;
     wandGroup.add(collarMesh);
 
     // Lower Wand Neck
-    const neckGeo = new THREE.CylinderGeometry(0.1, 0.09, 0.9, 24);
-    neckGeo.scale(1, 1, 0.75);
+    const neckGeo = new THREE.BoxGeometry(0.18, 0.85, 0.1);
     const neckMesh = new THREE.Mesh(neckGeo, mistBodyMat);
     neckMesh.position.y = -0.5;
     neckMesh.castShadow = true;
     wandGroup.add(neckMesh);
 
     // Wand Jaw / Pod Dock Clamping Head
-    const headGeo = new THREE.BoxGeometry(0.28, 0.22, 0.2);
+    const headGeo = new THREE.BoxGeometry(0.26, 0.22, 0.18);
     const headMesh = new THREE.Mesh(headGeo, mistBodyMat);
     headMesh.position.y = -0.98;
     headMesh.castShadow = true;

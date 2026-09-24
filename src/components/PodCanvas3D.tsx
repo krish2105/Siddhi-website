@@ -82,12 +82,12 @@ export const PodCanvas3D: React.FC = () => {
     podRoot.position.set(0, 0.05, 0);
     scene.add(podRoot);
 
-    // Studio Ground Pedestal
+    // Studio Ground Pedestal (Light Alabaster Travertine)
     const pedestalGeo = new THREE.CylinderGeometry(1.4, 1.5, 0.06, 48);
     const pedestalMat = new THREE.MeshStandardMaterial({
-      color: 0x22242c,
-      roughness: 0.6,
-      metalness: 0.2,
+      color: 0xf5f3ee,
+      roughness: 0.45,
+      metalness: 0.05,
     });
     const pedestal = new THREE.Mesh(pedestalGeo, pedestalMat);
     pedestal.position.y = -1.2;
@@ -98,8 +98,8 @@ export const PodCanvas3D: React.FC = () => {
     pedRimGeo.rotateX(Math.PI / 2);
     const pedRimMat = new THREE.MeshStandardMaterial({
       color: 0xc8a75a,
-      roughness: 0.25,
-      metalness: 0.9,
+      roughness: 0.22,
+      metalness: 0.92,
     });
     const pedRim = new THREE.Mesh(pedRimGeo, pedRimMat);
     pedRim.position.y = -1.18;
@@ -327,9 +327,9 @@ export const PodCanvas3D: React.FC = () => {
         minHeight: '390px',
         borderRadius: '20px',
         overflow: 'hidden',
-        background: 'radial-gradient(circle at 50% 35%, #252834 0%, #171822 65%, #0F1017 100%)',
-        border: '1px solid rgba(200, 167, 90, 0.25)',
-        boxShadow: 'inset 0 2px 20px rgba(0,0,0,0.4)',
+        background: 'radial-gradient(circle at 50% 30%, #FFFFFF 0%, #F7F6FA 55%, #EBE8F2 100%)',
+        border: '1px solid rgba(200, 167, 90, 0.35)',
+        boxShadow: '0 12px 36px -8px rgba(28, 28, 38, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9)',
       }}
     >
       {viewMode === '3d' ? (
@@ -350,9 +350,9 @@ export const PodCanvas3D: React.FC = () => {
               position: 'absolute',
               bottom: '16px',
               left: '16px',
-              background: 'rgba(28, 28, 38, 0.88)',
-              color: '#FFF',
-              backdropFilter: 'blur(10px)',
+              background: 'rgba(255, 255, 255, 0.92)',
+              color: 'var(--color-graphite)',
+              backdropFilter: 'blur(12px)',
               padding: '6px 14px',
               borderRadius: '9999px',
               fontSize: '11px',
@@ -361,6 +361,7 @@ export const PodCanvas3D: React.FC = () => {
               alignItems: 'center',
               gap: '6px',
               border: '1px solid var(--color-champagne)',
+              boxShadow: '0 4px 16px rgba(28, 28, 38, 0.1)',
             }}
           >
             <Sparkles size={12} color="#C8A75A" />
@@ -375,11 +376,11 @@ export const PodCanvas3D: React.FC = () => {
           position: 'absolute',
           top: '14px',
           left: '14px',
-          background: 'rgba(28, 28, 38, 0.9)',
-          backdropFilter: 'blur(8px)',
-          padding: '4px 12px',
+          background: 'rgba(255, 255, 255, 0.92)',
+          backdropFilter: 'blur(10px)',
+          padding: '5px 14px',
           borderRadius: '9999px',
-          border: '1px solid var(--color-champagne)',
+          border: '1px solid rgba(200, 167, 90, 0.45)',
           fontSize: '11px',
           fontWeight: 800,
           color: 'var(--color-champagne)',
@@ -387,6 +388,7 @@ export const PodCanvas3D: React.FC = () => {
           display: 'flex',
           alignItems: 'center',
           gap: '6px',
+          boxShadow: '0 4px 14px rgba(28, 28, 38, 0.06)',
           zIndex: 10,
         }}
       >
@@ -401,12 +403,13 @@ export const PodCanvas3D: React.FC = () => {
           top: '14px',
           right: '14px',
           display: 'flex',
-          gap: '6px',
-          background: 'rgba(20, 20, 28, 0.85)',
-          backdropFilter: 'blur(10px)',
+          gap: '4px',
+          background: 'rgba(255, 255, 255, 0.92)',
+          backdropFilter: 'blur(12px)',
           padding: '4px',
           borderRadius: '9999px',
-          border: '1px solid rgba(255,255,255,0.15)',
+          border: '1px solid rgba(28, 28, 38, 0.08)',
+          boxShadow: '0 4px 14px rgba(28, 28, 38, 0.06)',
           zIndex: 10,
         }}
       >
@@ -416,20 +419,21 @@ export const PodCanvas3D: React.FC = () => {
             setViewMode('3d');
           }}
           style={{
-            padding: '4px 10px',
+            padding: '5px 12px',
             borderRadius: '9999px',
             border: 'none',
             fontSize: '11px',
             fontWeight: 700,
             cursor: 'pointer',
-            background: viewMode === '3d' ? 'var(--color-champagne)' : 'transparent',
-            color: viewMode === '3d' ? '#1C1C26' : '#E2DFED',
+            background: viewMode === '3d' ? 'var(--color-graphite)' : 'transparent',
+            color: viewMode === '3d' ? '#FFFFFF' : 'var(--color-lilac-deep)',
             display: 'flex',
             alignItems: 'center',
             gap: '4px',
+            transition: 'all 0.2s ease',
           }}
         >
-          <Layers size={12} /> 3D Orbit
+          <Layers size={12} color={viewMode === '3d' ? '#C8A75A' : 'currentColor'} /> 3D Orbit
         </button>
         <button
           onClick={() => {
@@ -437,20 +441,21 @@ export const PodCanvas3D: React.FC = () => {
             setViewMode('macro');
           }}
           style={{
-            padding: '4px 10px',
+            padding: '5px 12px',
             borderRadius: '9999px',
             border: 'none',
             fontSize: '11px',
             fontWeight: 700,
             cursor: 'pointer',
-            background: viewMode === 'macro' ? 'var(--color-champagne)' : 'transparent',
-            color: viewMode === 'macro' ? '#1C1C26' : '#E2DFED',
+            background: viewMode === 'macro' ? 'var(--color-graphite)' : 'transparent',
+            color: viewMode === 'macro' ? '#FFFFFF' : 'var(--color-lilac-deep)',
             display: 'flex',
             alignItems: 'center',
             gap: '4px',
+            transition: 'all 0.2s ease',
           }}
         >
-          <ZoomIn size={12} /> 8K Macro
+          <ZoomIn size={12} color={viewMode === 'macro' ? '#C8A75A' : 'currentColor'} /> 8K Macro
         </button>
       </div>
 
@@ -465,12 +470,12 @@ export const PodCanvas3D: React.FC = () => {
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
-            background: 'rgba(28, 28, 38, 0.94)',
+            background: 'rgba(255, 255, 255, 0.94)',
             backdropFilter: 'blur(16px)',
             padding: '6px 14px',
             borderRadius: '9999px',
             border: '1px solid var(--color-champagne)',
-            boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
+            boxShadow: '0 8px 24px rgba(28, 28, 38, 0.12)',
             zIndex: 10,
           }}
         >
@@ -489,7 +494,7 @@ export const PodCanvas3D: React.FC = () => {
               fontSize: '12px',
               fontWeight: 800,
               cursor: 'pointer',
-              background: exploded ? 'var(--color-champagne)' : '#353745',
+              background: exploded ? 'var(--color-champagne)' : 'var(--color-graphite)',
               color: exploded ? '#1C1C26' : '#FFFFFF',
               transition: 'all 0.2s ease',
             }}
@@ -505,15 +510,16 @@ export const PodCanvas3D: React.FC = () => {
             }}
             title={autoRotate ? 'Pause Rotation' : 'Start 360° Orbit'}
             style={{
-              padding: '6px',
+              padding: '7px',
               borderRadius: '50%',
-              border: 'none',
-              background: autoRotate ? '#454859' : '#2A2B36',
-              color: '#FFFFFF',
+              border: '1px solid var(--border-subtle)',
+              background: autoRotate ? 'var(--color-champagne)' : '#FFFFFF',
+              color: autoRotate ? '#1C1C26' : 'var(--color-graphite)',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              transition: 'all 0.2s ease',
             }}
           >
             <RotateCw size={13} />

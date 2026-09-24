@@ -39,6 +39,7 @@ export const StickyMobileBar: React.FC<StickyMobileBarProps> = ({
         borderTop: '1px solid rgba(200, 167, 90, 0.35)',
         boxShadow: '0 -8px 25px rgba(0,0,0,0.08)',
         padding: '12px 16px',
+        paddingBottom: 'max(12px, env(safe-area-inset-bottom))',
         zIndex: 90,
         display: 'flex',
         alignItems: 'center',

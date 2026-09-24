@@ -257,9 +257,22 @@ h1, h2, h3, h4, h5, .font-display {
   z-index: 999;
 }
 
-/* Responsive adjustments */
+/* Responsive adjustments & Mobile Safeguards */
+img, svg, canvas {
+  max-width: 100%;
+}
+
 @media (max-width: 768px) {
   .container {
     padding: 0 16px;
+  }
+
+  body {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Safe padding for fixed elements */
+  .fixed-safe-bottom {
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
   }
 }

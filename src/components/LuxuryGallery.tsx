@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Sparkles, Maximize2, Check, Eye } from 'lucide-react';
+import { Sparkles, Maximize2, Check, Eye, ChevronLeft, ChevronRight, Compass } from 'lucide-react';
 import { BRAND } from '../config/brand.config';
-import { playSlideSound } from '../lib/sound';
+import { playSlideSound, playMechanicalClick } from '../lib/sound';
 
 export const LuxuryGallery: React.FC = () => {
   const [activePhoto, setActivePhoto] = useState<number>(0);
@@ -14,8 +14,13 @@ export const LuxuryGallery: React.FC = () => {
       image: '/assets/aurelle_hotel_suite.jpg',
       tag: '5-STAR HOSPITALITY',
       description:
-        'Installed in boutique hotels and luxury residences across Mumbai, Delhi, and Bengaluru. Sleek flush-mounted profile integrates flawlessly with Italian bookmatched marble and wall-hung designer sanitary ware.',
-      specs: ['Concealed rear ventilation channel', 'Brushed champagne PVD hardware', 'Discreet, odor-free guest bathroom touchpoint'],
+        'Installed in boutique hotels and luxury residences across Mumbai, Delhi, and Bengaluru. The sleek flush-mounted profile integrates flawlessly with Italian bookmatched marble and wall-hung designer sanitary ware.',
+      specs: [
+        'Concealed rear ventilation channel for rapid passive evaporation',
+        'Brushed champagne gold PVD hardware immune to humidity',
+        'Discreet, odor-free guest bathroom architectural touchpoint',
+      ],
+      architecturalSetting: 'Bookmatched Calacatta Gold & Axor Fixtures',
     },
     {
       title: 'The Presentation Box & Unboxing',
@@ -23,8 +28,13 @@ export const LuxuryGallery: React.FC = () => {
       image: '/assets/aurelle_unboxing.jpg',
       tag: 'UNBOXING RITUAL',
       description:
-        'Crafted from 100% recycled rigid board with debossed champagne gold typography. Inside: molded pulp cradle holding the wall caddy, telescoping wand, starter pod tubes, and a gold-foil QR welcome card.',
-      specs: ['Custom molded biodegradable pulp tray', 'Laser-etched inside QR reorder card', 'Zero single-use plastic wrap'],
+        'Crafted from 100% recycled rigid board with debossed champagne gold typography. Inside: molded pulp cradle holding the wall caddy, wand, starter pod tubes, and a gold-foil QR welcome card.',
+      specs: [
+        'Custom molded biodegradable pulp cradle',
+        'Laser-etched metallic reorder welcome card',
+        'Zero single-use plastic wrap or non-recyclable foams',
+      ],
+      architecturalSetting: 'Rigid Presentation Gift Box & Matte Finish',
     },
     {
       title: 'The Refill Ritual: Amber Glass & Linen',
@@ -33,7 +43,12 @@ export const LuxuryGallery: React.FC = () => {
       tag: 'DAILY RITUAL',
       description:
         'Refill pods arrive in raw unbleached natural linen pouches with debossed metallic logo. Transfer seamlessly into fluted amber glass apothecary canisters for an elevated countertop presence.',
-      specs: ['Natural unbleached linen pouch', 'Moisture-sealed bio-film capsules', 'Zero clutter under the sink'],
+      specs: [
+        'Natural unbleached linen storage pouch',
+        'Moisture-sealed enzymatic bio-film capsules',
+        'Eliminates ugly chemical detergent bottles under the sink',
+      ],
+      architecturalSetting: 'Amber Apothecary Canisters & Fluted Glass',
     },
     {
       title: 'Effervescent Foaming Micro-Bubbles',
@@ -42,7 +57,12 @@ export const LuxuryGallery: React.FC = () => {
       tag: 'ACTIVE SCIENCE',
       description:
         'Ultra-macro freeze-frame of the concentrated citrus-mineral capsule meeting clear water. Instant effervescence releases natural plant surfactants and odor-neutralizing botanical oils.',
-      specs: ['Instant self-activating foam', 'Phosphate-free citric descaling', 'Zero harsh chlorine or hydrochloric acid fumes'],
+      specs: [
+        'Instant self-activating oceanic enzymatic foam',
+        'Phosphate-free citric descaling of hard water minerals',
+        'Zero harsh chlorine or hydrochloric acid fumes',
+      ],
+      architecturalSetting: 'High-Speed Fluid Dynamic Macro Photography',
     },
     {
       title: 'Ergonomic Cleaning in Action',
@@ -51,7 +71,12 @@ export const LuxuryGallery: React.FC = () => {
       tag: 'ACTIVE FOAMING',
       description:
         'The moment the bio-cellulose head meets water, concentrated enzymatic cleaner instantly produces rich effervescent foam that breaks down limescale while keeping hands 18 inches away.',
-      specs: ['Under-rim deep contour reach', 'Zero chemical splashes on skin', 'Rigid core withstands 15kg scrub force'],
+      specs: [
+        'Under-rim deep contour reach with zero skin contact',
+        'Zero chemical splashes or back-drips',
+        'Rigid core structure withstands up to 15kg scrub force',
+      ],
+      architecturalSetting: 'Hands-Free 18-Inch Telescoping Clearance',
     },
     {
       title: 'Architectural Fluted Wall Mount',
@@ -60,7 +85,12 @@ export const LuxuryGallery: React.FC = () => {
       tag: 'HARDWARE INTEGRATION',
       description:
         'Slim 36mm profile mounted on vertical fluted marble. Soft ambient lighting catches the champagne-gold PVD trim, turning a traditionally hidden chore into an architectural fixture.',
-      specs: ['3M VHB heavy-duty adhesive (No drilling)', 'Brushed Champagne Gold PVD trim', 'Ventilated moisture-evaporating dock'],
+      specs: [
+        '3M VHB heavy-duty adhesive mounting (zero drilling)',
+        'Brushed Champagne Gold perimeter bezel and latch',
+        'Ventilated moisture-evaporating architectural dock',
+      ],
+      architecturalSetting: 'Vertical Fluted Marble & Warm LED Cove',
     },
     {
       title: 'Travertine Master Bathroom Setting',
@@ -69,9 +99,26 @@ export const LuxuryGallery: React.FC = () => {
       tag: 'ARCHITECTURAL DIGEST',
       description:
         'Engineered to complement limestone, travertine, and micro-cement bathrooms. Designed to disappear elegantly next to modern wall-hung sanitary ware.',
-      specs: ['Coordinates with Kohler, Grohe & Axor', 'Compact 90 × 120 mm footprint', 'Floor-clearance design'],
+      specs: [
+        'Coordinates seamlessly with Kohler, Grohe, Axor & Toto',
+        'Compact 90 × 120 mm footprint keeps floors clear',
+        'Floor-clearance design enables effortless robotic vacuuming',
+      ],
+      architecturalSetting: 'Honed Roman Travertine & Minimalist Joinery',
     },
   ];
+
+  const handlePrev = () => {
+    playSlideSound();
+    setActivePhoto((prev) => (prev > 0 ? prev - 1 : galleryItems.length - 1));
+  };
+
+  const handleNext = () => {
+    playSlideSound();
+    setActivePhoto((prev) => (prev < galleryItems.length - 1 ? prev + 1 : 0));
+  };
+
+  const currentItem = galleryItems[activePhoto];
 
   return (
     <section
@@ -84,97 +131,111 @@ export const LuxuryGallery: React.FC = () => {
     >
       <div className="container">
         {/* Header */}
-        <div style={{ textAlign: 'center', maxWidth: '780px', margin: '0 auto 54px auto' }}>
+        <div style={{ textAlign: 'center', maxWidth: '780px', margin: '0 auto 48px auto' }}>
           <div className="pill-badge" style={{ marginBottom: '14px' }}>
             <Sparkles size={13} color="#C8A75A" />
             <span>ARCHITECTURAL PHOTOGRAPHY &amp; HARDWARE CRAFT</span>
           </div>
-          <h2 style={{ fontSize: 'clamp(28px, 4.5vw, 48px)', marginBottom: '16px' }}>
+          <h2 style={{ fontSize: 'clamp(28px, 4.5vw, 44px)', marginBottom: '14px' }}>
             Crafted for the Modern Bathroom
           </h2>
-          <p style={{ color: 'var(--color-lilac-deep)', fontSize: '17px', lineHeight: 1.6 }}>
+          <p style={{ color: 'var(--color-lilac-deep)', fontSize: '16px', lineHeight: 1.6 }}>
             Explore the physical materials, unboxing ritual, and high-performance foaming action of {BRAND.name}.
           </p>
         </div>
 
-        {/* Featured Big Showcase + Thumbnails */}
+        {/* Symmetrical Master Showcase: Perfectly Aligned 2-Column Grid */}
         <div
+          className="gallery-grid"
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
-            gap: '36px',
-            alignItems: 'center',
-            marginBottom: '40px',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gap: '32px',
+            alignItems: 'stretch',
+            marginBottom: '36px',
           }}
         >
-          {/* Big Featured Photo Display */}
+          {/* Left Column: Full-Height Photo Display with Controls */}
           <div
             className="glass-panel"
             style={{
               position: 'relative',
-              borderRadius: 'var(--radius-hero)',
+              borderRadius: '24px',
               overflow: 'hidden',
-              minHeight: '440px',
-              height: '480px',
+              minHeight: '480px',
+              height: '100%',
+              maxHeight: '540px',
               border: '1px solid var(--border-subtle)',
               boxShadow: 'var(--shadow-xl)',
               background: '#F5F5F8',
-              cursor: 'zoom-in',
             }}
-            onClick={() => setModalImage(galleryItems[activePhoto].image)}
           >
             <img
-              src={galleryItems[activePhoto].image}
-              alt={galleryItems[activePhoto].title}
+              src={currentItem.image}
+              alt={currentItem.title}
+              key={currentItem.image}
               style={{
                 width: '100%',
                 height: '100%',
                 objectFit: 'cover',
                 display: 'block',
-                transition: 'transform 0.5s ease',
+                transition: 'opacity 0.4s ease, transform 0.6s ease',
               }}
             />
 
-            {/* Floating Info Tag Pill */}
+            {/* Floating Top Left Tag Pill */}
             <div
               style={{
                 position: 'absolute',
-                top: '20px',
-                left: '20px',
-                background: 'rgba(28, 28, 38, 0.9)',
+                top: '18px',
+                left: '18px',
+                background: 'rgba(255, 255, 255, 0.92)',
                 backdropFilter: 'blur(10px)',
                 padding: '6px 14px',
                 borderRadius: '9999px',
-                color: '#FFF',
+                color: 'var(--color-graphite)',
                 fontSize: '11px',
-                fontWeight: 700,
+                fontWeight: 800,
                 letterSpacing: '0.06em',
                 border: '1px solid var(--color-champagne)',
+                boxShadow: '0 4px 12px rgba(28, 28, 38, 0.1)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
               }}
             >
-              {galleryItems[activePhoto].tag}
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#C8A75A' }} />
+              <span>{currentItem.tag}</span>
             </div>
 
-            {/* Click to Enlarge Icon */}
-            <div
+            {/* Top Right: Enlarge Lightbox Button */}
+            <button
+              onClick={() => {
+                playMechanicalClick();
+                setModalImage(currentItem.image);
+              }}
+              title="Click to view high-resolution photo"
               style={{
                 position: 'absolute',
-                top: '20px',
-                right: '20px',
-                width: '36px',
-                height: '36px',
+                top: '18px',
+                right: '18px',
+                width: '38px',
+                height: '38px',
                 borderRadius: '50%',
-                background: 'rgba(255, 255, 255, 0.88)',
-                backdropFilter: 'blur(8px)',
+                background: 'rgba(255, 255, 255, 0.92)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid var(--border-subtle)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 color: 'var(--color-graphite)',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                cursor: 'pointer',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
+                transition: 'transform 0.2s ease',
               }}
             >
               <Maximize2 size={16} />
-            </div>
+            </button>
 
             {/* Bottom Caption Overlay */}
             <div
@@ -184,86 +245,239 @@ export const LuxuryGallery: React.FC = () => {
                 left: 0,
                 right: 0,
                 padding: '24px',
-                background: 'linear-gradient(to top, rgba(28, 28, 38, 0.92) 0%, rgba(28, 28, 38, 0) 100%)',
+                background: 'linear-gradient(to top, rgba(20, 20, 28, 0.92) 0%, rgba(20, 20, 28, 0.5) 60%, transparent 100%)',
                 color: '#FFFFFF',
               }}
             >
-              <h3 style={{ fontSize: '20px', fontWeight: 800, marginBottom: '4px' }}>
-                {galleryItems[activePhoto].title}
-              </h3>
-              <p style={{ fontSize: '13px', color: 'var(--color-mist)', opacity: 0.9 }}>
-                {galleryItems[activePhoto].subtitle}
-              </p>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
+                <div>
+                  <h3 style={{ fontSize: '19px', fontWeight: 800, marginBottom: '4px', textShadow: '0 2px 6px rgba(0,0,0,0.3)' }}>
+                    {currentItem.title}
+                  </h3>
+                  <p style={{ fontSize: '13px', color: '#E4E2ED', opacity: 0.95 }}>
+                    {currentItem.subtitle}
+                  </p>
+                </div>
+
+                {/* Left/Right Step Controls on image */}
+                <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
+                  <button
+                    onClick={handlePrev}
+                    aria-label="Previous image"
+                    style={{
+                      width: '34px',
+                      height: '34px',
+                      borderRadius: '50%',
+                      background: 'rgba(255, 255, 255, 0.25)',
+                      backdropFilter: 'blur(8px)',
+                      border: '1px solid rgba(255, 255, 255, 0.4)',
+                      color: '#FFF',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <ChevronLeft size={16} />
+                  </button>
+                  <button
+                    onClick={handleNext}
+                    aria-label="Next image"
+                    style={{
+                      width: '34px',
+                      height: '34px',
+                      borderRadius: '50%',
+                      background: 'rgba(255, 255, 255, 0.25)',
+                      backdropFilter: 'blur(8px)',
+                      border: '1px solid rgba(255, 255, 255, 0.4)',
+                      color: '#FFF',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <ChevronRight size={16} />
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Right: Technical Narrative & Photo Selector Cards */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {galleryItems.map((item, index) => {
-              const isSelected = activePhoto === index;
-              return (
-                <div
-                  key={index}
-                  onClick={() => setActivePhoto(index)}
-                  style={{
-                    padding: '20px 24px',
-                    borderRadius: '16px',
-                    cursor: 'pointer',
-                    transition: 'var(--transition)',
-                    background: isSelected ? '#FFFFFF' : 'rgba(245, 245, 248, 0.7)',
-                    border: isSelected ? '2px solid var(--color-champagne)' : '1px solid var(--border-subtle)',
-                    boxShadow: isSelected ? 'var(--shadow-md)' : 'none',
-                    transform: isSelected ? 'translateX(6px)' : 'none',
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                    <span
+          {/* Right Column: Architectural Focus & Craftsmanship Breakdown */}
+          <div
+            className="glass-panel"
+            style={{
+              borderRadius: '24px',
+              padding: '36px',
+              background: '#FFFFFF',
+              border: '1px solid var(--border-subtle)',
+              boxShadow: 'var(--shadow-lg)',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              minHeight: '480px',
+              height: '100%',
+              maxHeight: '540px',
+            }}
+          >
+            <div>
+              {/* Counter & Category Row */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span
+                    style={{
+                      background: 'rgba(200, 167, 90, 0.12)',
+                      color: 'var(--color-champagne)',
+                      border: '1px solid rgba(200, 167, 90, 0.3)',
+                      padding: '4px 10px',
+                      borderRadius: '9999px',
+                      fontSize: '11px',
+                      fontWeight: 800,
+                      letterSpacing: '0.06em',
+                    }}
+                  >
+                    0{activePhoto + 1} / 0{galleryItems.length}
+                  </span>
+                  <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-lilac-deep)' }}>
+                    ARCHITECTURAL SETTING
+                  </span>
+                </div>
+
+                <div style={{ display: 'flex', gap: '4px' }}>
+                  {galleryItems.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => {
+                        playSlideSound();
+                        setActivePhoto(idx);
+                      }}
+                      aria-label={`Go to slide ${idx + 1}`}
                       style={{
-                        fontSize: '11px',
-                        fontWeight: 800,
-                        letterSpacing: '0.08em',
-                        color: isSelected ? 'var(--color-champagne)' : 'var(--color-lilac-deep)',
+                        width: activePhoto === idx ? '22px' : '7px',
+                        height: '6px',
+                        borderRadius: '3px',
+                        background: activePhoto === idx ? 'var(--color-champagne)' : '#E2DFED',
+                        border: 'none',
+                        cursor: 'pointer',
+                        padding: 0,
+                        transition: 'all 0.25s ease',
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Title & Setting */}
+              <h3 style={{ fontSize: '24px', fontWeight: 800, color: 'var(--color-graphite)', marginBottom: '8px', lineHeight: 1.25 }}>
+                {currentItem.title}
+              </h3>
+              <div
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  color: 'var(--color-champagne)',
+                  fontSize: '13px',
+                  fontWeight: 700,
+                  marginBottom: '16px',
+                }}
+              >
+                <Compass size={14} />
+                <span>{currentItem.architecturalSetting}</span>
+              </div>
+
+              {/* Narrative */}
+              <p style={{ color: 'var(--color-lilac-deep)', fontSize: '15px', lineHeight: 1.6, marginBottom: '24px' }}>
+                {currentItem.description}
+              </p>
+
+              {/* Specifications List */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {currentItem.specs.map((spec, sIdx) => (
+                  <div
+                    key={sIdx}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      gap: '10px',
+                      background: 'rgba(245, 245, 248, 0.65)',
+                      padding: '10px 14px',
+                      borderRadius: '12px',
+                      border: '1px solid rgba(28, 28, 38, 0.04)',
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: '20px',
+                        height: '20px',
+                        borderRadius: '50%',
+                        background: 'rgba(200, 167, 90, 0.15)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                        marginTop: '1px',
                       }}
                     >
-                      0{index + 1}. {item.tag}
-                    </span>
-                    {isSelected && (
-                      <span
-                        style={{
-                          fontSize: '11px',
-                          color: '#2F7D6B',
-                          background: '#EAF5F2',
-                          padding: '2px 8px',
-                          borderRadius: '4px',
-                          fontWeight: 700,
-                        }}
-                      >
-                        Viewing
-                      </span>
-                    )}
-                  </div>
-
-                  <h4 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '6px' }}>
-                    {item.title}
-                  </h4>
-
-                  <p style={{ fontSize: '13px', color: 'var(--color-lilac-deep)', lineHeight: 1.5, marginBottom: '10px' }}>
-                    {item.description}
-                  </p>
-
-                  {isSelected && (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', paddingTop: '8px', borderTop: '1px solid var(--border-subtle)' }}>
-                      {item.specs.map((spec, sIdx) => (
-                        <div key={sIdx} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: 'var(--color-graphite)' }}>
-                          <Check size={14} color="#C8A75A" />
-                          <span>{spec}</span>
-                        </div>
-                      ))}
+                      <Check size={12} color="#C8A75A" />
                     </div>
-                  )}
-                </div>
-              );
-            })}
+                    <span style={{ fontSize: '13px', color: 'var(--color-graphite)', fontWeight: 500, lineHeight: 1.4 }}>
+                      {spec}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Bottom Action / View Switcher */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                paddingTop: '20px',
+                borderTop: '1px solid var(--border-subtle)',
+                marginTop: '20px',
+              }}
+            >
+              <span style={{ fontSize: '12px', color: 'var(--color-lilac-deep)' }}>
+                Click below to inspect another setting
+              </span>
+
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <button
+                  onClick={handlePrev}
+                  style={{
+                    padding: '8px 14px',
+                    borderRadius: '8px',
+                    background: '#F5F5F8',
+                    border: '1px solid var(--border-subtle)',
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    color: 'var(--color-graphite)',
+                  }}
+                >
+                  ← Prev
+                </button>
+                <button
+                  onClick={handleNext}
+                  style={{
+                    padding: '8px 14px',
+                    borderRadius: '8px',
+                    background: 'var(--color-graphite)',
+                    border: 'none',
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    color: '#FFFFFF',
+                  }}
+                >
+                  Next →
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -271,11 +485,10 @@ export const LuxuryGallery: React.FC = () => {
         <div
           style={{
             position: 'relative',
-            marginTop: '-24px',
             zIndex: 20,
             display: 'flex',
             justifyContent: 'center',
-            padding: '0 12px',
+            padding: '0 8px',
           }}
         >
           <div
@@ -286,11 +499,11 @@ export const LuxuryGallery: React.FC = () => {
               gap: '12px',
               padding: '10px 16px',
               borderRadius: '9999px',
-              background: 'rgba(255, 255, 255, 0.88)',
+              background: 'rgba(255, 255, 255, 0.92)',
               backdropFilter: 'blur(20px)',
               WebkitBackdropFilter: 'blur(20px)',
               border: '1px solid rgba(200, 167, 90, 0.4)',
-              boxShadow: '0 20px 40px -10px rgba(28, 28, 38, 0.22), 0 0 0 1px rgba(255, 255, 255, 0.6) inset',
+              boxShadow: '0 20px 40px -10px rgba(28, 28, 38, 0.16), 0 0 0 1px rgba(255, 255, 255, 0.8) inset',
               overflowX: 'auto',
               maxWidth: '100%',
               WebkitOverflowScrolling: 'touch',
@@ -301,7 +514,7 @@ export const LuxuryGallery: React.FC = () => {
                 display: 'flex',
                 alignItems: 'center',
                 gap: '6px',
-                padding: '0 8px 0 4px',
+                padding: '0 10px 0 4px',
                 borderRight: '1px solid var(--border-subtle)',
                 fontSize: '11px',
                 fontWeight: 800,
@@ -415,6 +628,19 @@ export const LuxuryGallery: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Responsive Inline CSS */}
+      <style>{`
+        @media (max-width: 860px) {
+          .gallery-grid {
+            grid-template-columns: 1fr !important;
+          }
+          .gallery-grid > div {
+            max-height: none !important;
+            min-height: auto !important;
+          }
+        }
+      `}</style>
     </section>
   );
 };
