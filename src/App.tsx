@@ -225,6 +225,7 @@ export function App() {
         {currentView === 'checkout' && (
           <CheckoutView
             selectedBundle={selectedBundle}
+            vipUserPhone={vipUserPhone}
             onBackToHome={() => {
               setCurrentView('home');
               window.scrollTo({ top: 0, behavior: 'smooth' });

@@ -9,12 +9,14 @@ interface CheckoutViewProps {
   selectedBundle: ProductBundleConfig;
   onBackToHome: () => void;
   onTrackOrder?: (orderId: string) => void;
+  vipUserPhone?: string | null;
 }
 
 export const CheckoutView: React.FC<CheckoutViewProps> = ({
   selectedBundle,
   onBackToHome,
   onTrackOrder,
+  vipUserPhone,
 }) => {
   const [paymentMethod, setPaymentMethod] = useState<'cod' | 'upi' | 'card'>('cod');
   const [quantity, setQuantity] = useState<number>(1);
@@ -24,7 +26,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
 
   // Form Fields
   const [fullName, setFullName] = useState('');
-  const [phone, setPhone] = useState('');
+  const [phone, setPhone] = useState(vipUserPhone || '');
   const [email, setEmail] = useState('');
   const [address, setAddress] = useState('');
   const [pincode, setPincode] = useState('400001');
@@ -43,7 +45,9 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
     else if (pin.length === 6) setCity('Express Hub, IN');
   };
 
-  const totalPrice = selectedBundle.price * quantity;
+  const upiDiscount = paymentMethod === 'upi' ? 100 : 0;
+  const vipDiscount = vipUserPhone ? 200 : 0;
+  const totalPrice = Math.max(0, selectedBundle.price * quantity - upiDiscount - vipDiscount);
   const originalTotalPrice = selectedBundle.originalPrice * quantity;
   const totalSavings = originalTotalPrice - totalPrice;
 
@@ -644,10 +648,45 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                 <span>Express Delivery in India</span>
                 <span style={{ color: '#2F7D6B', fontWeight: 700 }}>FREE</span>
               </div>
+              {paymentMethod === 'upi' && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', color: '#2F7D6B', fontWeight: 700 }}>
+                  <span>Prepaid UPI Instant Discount</span>
+                  <span>-₹100</span>
+                </div>
+              )}
+              {vipUserPhone && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--color-champagne)', fontWeight: 800 }}>
+                  <span>Aurelle Privé VIP Credit</span>
+                  <span>-₹200</span>
+                </div>
+              )}
               <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--color-lilac-deep)' }}>
                 <span>COD Convenience Fee</span>
                 <span style={{ color: '#2F7D6B', fontWeight: 700 }}>₹0 (FREE)</span>
               </div>
+
+              {vipUserPhone && (
+                <div
+                  style={{
+                    background: '#FDF8EA',
+                    border: '1px dashed var(--color-champagne)',
+                    borderRadius: '10px',
+                    padding: '10px 12px',
+                    margin: '6px 0',
+                    fontSize: '11px',
+                    lineHeight: 1.4,
+                    color: 'var(--color-graphite)',
+                  }}
+                >
+                  <div style={{ fontWeight: 800, color: 'var(--color-champagne)', display: 'flex', alignItems: 'center', gap: '5px', marginBottom: '2px' }}>
+                    <Sparkles size={13} />
+                    <span>AURELLE PRIVÉ VIP PERKS ACTIVE</span>
+                  </div>
+                  <div>✦ ₹200 Welcome Gift auto-applied to order</div>
+                  <div>✦ Complimentary Heavy-Duty 3M Mount Included</div>
+                  <div>✦ 15% Auto-Ship Subscription Refill Rate Unlocked</div>
+                </div>
+              )}
 
               <div style={{ borderTop: '1.5px solid var(--border-subtle)', paddingTop: '14px', marginTop: '6px', display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
                 <span style={{ fontSize: '16px', fontWeight: 800 }}>Total Amount</span>
