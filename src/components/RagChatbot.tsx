@@ -430,7 +430,16 @@ export const RagChatbot: React.FC<RagChatbotProps> = ({
   const [inputVal, setInputVal] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [unreadCount, setUnreadCount] = useState(1);
+  const [isScrolled, setIsScrolled] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 400);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -517,7 +526,7 @@ export const RagChatbot: React.FC<RagChatbotProps> = ({
       {/* Floating Concierge Launcher Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="aurelle-rag-launcher-btn"
+        className={`aurelle-rag-launcher-btn ${isScrolled ? 'scrolled' : ''}`}
         style={{
           position: 'fixed',
           bottom: '28px',
@@ -566,7 +575,7 @@ export const RagChatbot: React.FC<RagChatbotProps> = ({
             />
           )}
         </div>
-        <div style={{ textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
+        <div className="aurelle-rag-launcher-text" style={{ textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
           <span style={{ fontSize: '13px', fontWeight: 800, letterSpacing: '0.02em', color: '#FFFFFF' }}>
             AURELLE AI
           </span>
@@ -891,9 +900,20 @@ export const RagChatbot: React.FC<RagChatbotProps> = ({
       <style>{`
         @media (max-width: 768px) {
           .aurelle-rag-launcher-btn {
-            bottom: 84px !important;
+            bottom: 20px !important;
             right: 16px !important;
-            padding: 9px 13px !important;
+            width: 44px !important;
+            height: 44px !important;
+            padding: 0 !important;
+            border-radius: 50% !important;
+            justify-content: center !important;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3) !important;
+          }
+          .aurelle-rag-launcher-btn.scrolled {
+            bottom: calc(76px + env(safe-area-inset-bottom, 12px)) !important;
+          }
+          .aurelle-rag-launcher-text {
+            display: none !important;
           }
           .aurelle-rag-drawer {
             bottom: 80px !important;

@@ -715,7 +715,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             <div
               style={{
                 padding: '16px 20px',
-                paddingBottom: 'max(20px, env(safe-area-inset-bottom))',
+                paddingBottom: 'calc(18px + env(safe-area-inset-bottom, 14px))',
                 borderTop: '1px solid var(--border-subtle)',
                 background: '#FFFFFF',
                 boxShadow: '0 -4px 16px rgba(0,0,0,0.04)',
@@ -759,16 +759,16 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'baseline',
-                  marginBottom: '16px',
+                  marginBottom: '14px',
                   paddingTop: '10px',
                   borderTop: '1px solid var(--border-subtle)',
                 }}
               >
                 <div>
-                  <div style={{ fontSize: '17px', fontWeight: 800 }}>Total Payable</div>
+                  <div style={{ fontSize: '16px', fontWeight: 800 }}>Total Payable</div>
                   <div style={{ fontSize: '10px', color: 'var(--color-lilac-deep)' }}>Includes 18% GST • Delivery Included</div>
                 </div>
-                <div style={{ fontSize: '24px', fontWeight: 800, color: 'var(--color-graphite)' }}>
+                <div style={{ fontSize: '22px', fontWeight: 800, color: 'var(--color-graphite)' }}>
                   {formatINR(subtotal)}
                 </div>
               </div>
@@ -778,8 +778,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 className="btn-primary"
                 style={{
                   width: '100%',
-                  padding: '15px',
-                  fontSize: '15px',
+                  padding: '13px 20px',
+                  fontSize: '14.5px',
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',

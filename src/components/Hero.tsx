@@ -38,8 +38,9 @@ export const Hero: React.FC<HeroProps> = ({ onOrderNow, onExplore3D, onViewProdu
 
           <h1
             style={{
-              fontSize: 'clamp(34px, 5.5vw, 64px)',
-              lineHeight: 1.1,
+              fontSize: 'clamp(25px, 5.2vw, 56px)',
+              lineHeight: 1.15,
+              letterSpacing: '-0.025em',
               maxWidth: '920px',
               marginBottom: '16px',
             }}
@@ -50,39 +51,36 @@ export const Hero: React.FC<HeroProps> = ({ onOrderNow, onExplore3D, onViewProdu
 
           <p
             style={{
-              fontSize: 'clamp(16px, 2vw, 19px)',
+              fontSize: 'clamp(14px, 1.8vw, 17px)',
               color: 'var(--color-lilac-deep)',
-              maxWidth: '680px',
-              lineHeight: 1.6,
-              marginBottom: '28px',
+              maxWidth: '640px',
+              lineHeight: 1.55,
+              marginBottom: '26px',
             }}
           >
             A wall-mounted cleaning kit with heads you never touch and never reuse. Alabaster mist casing, brushed champagne gold slide-latch, and self-activating foaming pods.
           </p>
 
           {/* Primary Action Buttons */}
-          <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '24px' }}>
-            <button onClick={onOrderNow} className="btn-primary" style={{ padding: '16px 32px', fontSize: '16px' }}>
-              Buy the Kit • From ₹1,199 <ArrowRight size={16} />
+          <div className="hero-cta-group">
+            <button onClick={onOrderNow} className="btn-primary hero-btn-main">
+              Buy the Kit • From ₹1,199 <ArrowRight size={15} />
             </button>
-            <button onClick={onExplore3D} className="btn-secondary" style={{ padding: '16px 28px', fontSize: '15px' }}>
+            <button onClick={onExplore3D} className="btn-secondary hero-btn-sub">
               See How It Works
             </button>
             {onOpenAr && (
               <button
                 onClick={onOpenAr}
-                className="btn-secondary"
+                className="btn-secondary hero-btn-sub hero-btn-ar"
                 style={{
-                  padding: '16px 24px',
-                  fontSize: '15px',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '8px',
                   border: '1.5px solid var(--color-champagne)',
                   background: '#FFFFFF',
                 }}
               >
-                <Smartphone size={16} color="#C8A75A" />
+                <Smartphone size={15} color="#C8A75A" />
                 <span>View in AR (3D)</span>
               </button>
             )}
@@ -326,6 +324,46 @@ export const Hero: React.FC<HeroProps> = ({ onOrderNow, onExplore3D, onViewProdu
           </div>
         </div>
       </div>
+
+      <style>{`
+        .hero-cta-group {
+          display: flex;
+          gap: 12px;
+          flex-wrap: wrap;
+          justify-content: center;
+          margin-bottom: 24px;
+          max-width: 580px;
+          margin-left: auto;
+          margin-right: auto;
+        }
+        .hero-btn-main {
+          padding: 14px 28px;
+          font-size: 15px;
+          font-weight: 700;
+        }
+        .hero-btn-sub {
+          padding: 13px 22px;
+          font-size: 14px;
+        }
+        @media (max-width: 640px) {
+          .hero-cta-group {
+            gap: 8px;
+            width: 100%;
+          }
+          .hero-btn-main {
+            width: 100% !important;
+            padding: 13px 20px !important;
+            font-size: 14px !important;
+          }
+          .hero-btn-sub {
+            flex: 1 1 calc(50% - 6px) !important;
+            min-width: 130px !important;
+            padding: 11px 12px !important;
+            font-size: 12.5px !important;
+            gap: 6px !important;
+          }
+        }
+      `}</style>
     </section>
   );
 };

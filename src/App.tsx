@@ -60,14 +60,16 @@ export function App() {
         const parsed = JSON.parse(stored);
         if (parsed.phone) setVipUserPhone(parsed.phone);
       } else {
-        // Auto-show VIP offer after 5s once per session
-        const shown = sessionStorage.getItem('aurelle_vip_prompt_shown');
-        if (!shown) {
-          const timer = setTimeout(() => {
-            setIsVipOpen(true);
-            sessionStorage.setItem('aurelle_vip_prompt_shown', 'true');
-          }, 5000);
-          return () => clearTimeout(timer);
+        // Auto-show VIP offer only on desktop screens (>=768px) after 8s once per session (never disrupt mobile users)
+        if (typeof window !== 'undefined' && window.innerWidth >= 768) {
+          const shown = sessionStorage.getItem('aurelle_vip_prompt_shown');
+          if (!shown) {
+            const timer = setTimeout(() => {
+              setIsVipOpen(true);
+              sessionStorage.setItem('aurelle_vip_prompt_shown', 'true');
+            }, 8000);
+            return () => clearTimeout(timer);
+          }
         }
       }
     } catch {

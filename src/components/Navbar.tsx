@@ -115,7 +115,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               {BRAND.name.toUpperCase()}
             </span>
-            <span style={{ fontSize: '9px', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--color-lilac-deep)' }}>
+            <span
+              className="brand-subtitle"
+              style={{ fontSize: '9px', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--color-lilac-deep)' }}
+            >
               HYGIENE HARDWARE
             </span>
           </div>
@@ -324,16 +327,17 @@ export const Navbar: React.FC<NavbarProps> = ({
           .mobile-menu-btn { display: none !important; }
         }
         @media (max-width: 640px) {
-          .nav-actions-group { gap: 8px !important; }
-          .vip-nav-btn { padding: 6px 10px !important; font-size: 12px !important; }
+          .brand-subtitle { display: none !important; }
+          .nav-actions-group { gap: 6px !important; }
+          .vip-nav-btn { padding: 5px 9px !important; font-size: 11.5px !important; }
           .vip-badge-pill { display: none !important; }
-          .bag-nav-btn { padding: 6px 10px !important; gap: 6px !important; }
+          .bag-nav-btn { padding: 5px 9px !important; gap: 6px !important; font-size: 12px !important; }
           .bag-label { display: none !important; }
         }
         @media (max-width: 380px) {
-          .nav-actions-group { gap: 6px !important; }
-          .vip-nav-btn { padding: 5px 8px !important; font-size: 11px !important; }
-          .bag-nav-btn { padding: 5px 8px !important; }
+          .nav-actions-group { gap: 4px !important; }
+          .vip-nav-btn { padding: 4px 7px !important; font-size: 11px !important; }
+          .bag-nav-btn { padding: 4px 7px !important; }
         }
       `}</style>
     </header>

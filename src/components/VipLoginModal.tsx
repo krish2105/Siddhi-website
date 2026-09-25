@@ -123,6 +123,7 @@ export const VipLoginModal: React.FC<VipLoginModalProps> = ({
     >
       <div
         onClick={(e) => e.stopPropagation()}
+        className="vip-modal-dialog"
         style={{
           width: '100%',
           maxWidth: '740px',
@@ -163,6 +164,7 @@ export const VipLoginModal: React.FC<VipLoginModalProps> = ({
 
         {/* LEFT PANEL: Aurelle Privé Brand & Exclusive Perks (Dark Velvet / Forest Obsidian) */}
         <div
+          className="vip-modal-left-panel"
           style={{
             background: 'linear-gradient(145deg, #1C2421 0%, #111816 100%)',
             color: '#FFFFFF',
@@ -206,6 +208,7 @@ export const VipLoginModal: React.FC<VipLoginModalProps> = ({
             </div>
 
             <h3
+              className="vip-modal-title"
               style={{
                 fontSize: '24px',
                 fontWeight: 800,
@@ -218,12 +221,12 @@ export const VipLoginModal: React.FC<VipLoginModalProps> = ({
               Login now to avail exclusive member offers!
             </h3>
 
-            <p style={{ fontSize: '13px', color: '#B6B5C2', lineHeight: 1.5, marginBottom: '28px' }}>
+            <p className="vip-modal-p" style={{ fontSize: '13px', color: '#B6B5C2', lineHeight: 1.5, marginBottom: '28px' }}>
               Join over 14,000 discerning patrons across India. Access instant cart credits, 1-click checkout, and VIP dispatch.
             </p>
 
             {/* Exclusive Perks List */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div className="vip-modal-perks" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '12px' }}>
                 <div style={{ background: 'rgba(200, 167, 90, 0.2)', padding: '5px', borderRadius: '6px' }}>
                   <Sparkles size={14} color="#C8A75A" />
@@ -267,6 +270,7 @@ export const VipLoginModal: React.FC<VipLoginModalProps> = ({
 
         {/* RIGHT PANEL: Authentication Form */}
         <div
+          className="vip-modal-right-panel"
           style={{
             padding: '40px 32px',
             display: 'flex',
@@ -592,6 +596,42 @@ export const VipLoginModal: React.FC<VipLoginModalProps> = ({
           )}
         </div>
       </div>
+
+      <style>{`
+        @media (max-width: 640px) {
+          .vip-modal-dialog {
+            max-height: 86vh !important;
+            border-radius: 20px !important;
+            grid-template-columns: 1fr !important;
+            overflow-y: auto !important;
+          }
+          .vip-modal-left-panel {
+            padding: 22px 20px !important;
+            border-right: none !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+          }
+          .vip-modal-title {
+            font-size: 18px !important;
+            line-height: 1.25 !important;
+            margin-bottom: 6px !important;
+          }
+          .vip-modal-p {
+            font-size: 11.5px !important;
+            line-height: 1.4 !important;
+            margin-bottom: 14px !important;
+          }
+          .vip-modal-perks {
+            gap: 6px !important;
+          }
+          .vip-modal-perks > div {
+            font-size: 11px !important;
+            gap: 8px !important;
+          }
+          .vip-modal-right-panel {
+            padding: 22px 20px !important;
+          }
+        }
+      `}</style>
     </div>
   );
 };
