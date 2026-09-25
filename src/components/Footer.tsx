@@ -202,6 +202,30 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPolicy, onNavigate }) => {
                   <span style={{ fontSize: '10px', color: 'var(--color-champagne)' }}>₹2.15L</span>
                 </a>
               </li>
+              <li>
+                <a
+                  href="/Aurelle_Global_Go_Live_Master_Plan.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    color: '#FFFFFF',
+                    textDecoration: 'none',
+                    fontSize: '13px',
+                    fontWeight: 700,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    background: 'rgba(47, 125, 107, 0.22)',
+                    padding: '4px 10px',
+                    borderRadius: '6px',
+                    border: '1px solid rgba(47, 125, 107, 0.5)',
+                    marginTop: '4px',
+                  }}
+                >
+                  <span>🌐 Global Go-Live Blueprint (PDF)</span>
+                  <span style={{ fontSize: '10px', color: '#4ADE80', fontWeight: 800 }}>Score 96</span>
+                </a>
+              </li>
             </ul>
           </div>
 
