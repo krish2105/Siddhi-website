@@ -44,7 +44,7 @@ export const BundleSelector: React.FC<BundleSelectorProps> = ({
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(310px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))',
             gap: '24px',
             alignItems: 'stretch',
           }}
@@ -56,7 +56,7 @@ export const BundleSelector: React.FC<BundleSelectorProps> = ({
               <div
                 key={bundle.id}
                 onClick={() => onSelectBundle(bundle)}
-                className="glass-panel"
+                className="glass-panel bundle-card"
                 style={{
                   padding: '36px 28px',
                   display: 'flex',
@@ -213,6 +213,12 @@ export const BundleSelector: React.FC<BundleSelectorProps> = ({
           </div>
         </div>
       </div>
+
+      <style>{`
+        @media (max-width: 640px) {
+          .bundle-card { padding: 26px 18px !important; }
+        }
+      `}</style>
     </section>
   );
 };

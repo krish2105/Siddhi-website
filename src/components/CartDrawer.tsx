@@ -714,7 +714,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             {/* Bottom Checkout Actions & Order Summary */}
             <div
               style={{
-                padding: '20px 24px',
+                padding: '16px 20px',
+                paddingBottom: 'max(20px, env(safe-area-inset-bottom))',
                 borderTop: '1px solid var(--border-subtle)',
                 background: '#FFFFFF',
                 boxShadow: '0 -4px 16px rgba(0,0,0,0.04)',

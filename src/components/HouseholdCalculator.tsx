@@ -54,14 +54,14 @@ export const HouseholdCalculator: React.FC<HouseholdCalculatorProps> = ({ onSele
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))',
             gap: '32px',
             alignItems: 'stretch',
           }}
         >
           {/* Controls Panel */}
           <div
-            className="glass-panel"
+            className="glass-panel calc-card"
             style={{
               padding: '36px',
               background: '#FFFFFF',
@@ -156,7 +156,7 @@ export const HouseholdCalculator: React.FC<HouseholdCalculatorProps> = ({ onSele
 
           {/* Results & Recommendation Panel */}
           <div
-            className="glass-panel"
+            className="glass-panel calc-card"
             style={{
               padding: '36px',
               background: '#FFFFFF',
@@ -287,6 +287,12 @@ export const HouseholdCalculator: React.FC<HouseholdCalculatorProps> = ({ onSele
           </div>
         </div>
       </div>
+
+      <style>{`
+        @media (max-width: 640px) {
+          .calc-card { padding: 22px 16px !important; }
+        }
+      `}</style>
     </section>
   );
 };

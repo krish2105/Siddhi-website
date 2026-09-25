@@ -335,7 +335,7 @@ export const PodCanvas3D: React.FC = () => {
       {viewMode === '3d' ? (
         <div
           ref={mountRef}
-          style={{ width: '100%', height: '100%', minHeight: '390px', cursor: 'grab' }}
+          style={{ width: '100%', height: '100%', minHeight: '390px', cursor: 'grab', touchAction: 'pan-y' }}
           title="Click and drag to rotate in 3D"
         />
       ) : (

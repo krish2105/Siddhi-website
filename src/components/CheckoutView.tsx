@@ -213,16 +213,17 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
 
         {/* 2-Column Checkout Layout */}
         <div
+          className="checkout-grid"
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 340px), 1fr))',
             gap: '36px',
             alignItems: 'start',
           }}
         >
           {/* Left Column: Customer Details & Payment Options */}
           <div
-            className="glass-panel"
+            className="glass-panel checkout-card"
             style={{
               padding: '36px',
               borderRadius: '24px',
@@ -241,7 +242,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                   <h3 style={{ fontSize: '18px', fontWeight: 800 }}>Customer Contact</h3>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '14px' }}>
+                <div className="checkout-input-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '14px' }}>
                   <div>
                     <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, marginBottom: '6px', color: 'var(--color-graphite)' }}>
                       Full Name *
@@ -335,7 +336,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                   />
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                <div className="checkout-input-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
                   <div>
                     <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, marginBottom: '6px', color: 'var(--color-graphite)' }}>
                       6-Digit PIN Code *
@@ -551,7 +552,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
 
           {/* Right Column: Order Summary & Inclusions */}
           <div
-            className="glass-panel"
+            className="glass-panel checkout-card"
             style={{
               padding: '36px',
               borderRadius: '24px',
@@ -709,6 +710,13 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
           </div>
         </div>
       </div>
+
+      <style>{`
+        @media (max-width: 640px) {
+          .checkout-card { padding: 20px 16px !important; border-radius: 18px !important; }
+          .checkout-input-row { grid-template-columns: 1fr !important; gap: 12px !important; }
+        }
+      `}</style>
     </div>
   );
 };

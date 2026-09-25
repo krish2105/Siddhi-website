@@ -138,7 +138,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         </nav>
 
         {/* Header Right Actions */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }} className="nav-actions-group">
           <button
             onClick={onOpenTrack}
             style={{
@@ -183,6 +183,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* VIP Privé FastPass Trigger */}
           <button
             onClick={onOpenVip}
+            className="vip-nav-btn"
             style={{
               background: vipUserPhone ? 'rgba(47, 125, 107, 0.1)' : 'rgba(200, 167, 90, 0.12)',
               border: vipUserPhone ? '1px solid #2F7D6B' : '1px solid rgba(200, 167, 90, 0.4)',
@@ -202,6 +203,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span>{vipUserPhone ? 'Privé Active' : 'VIP Privé'}</span>
             {!vipUserPhone && (
               <span
+                className="vip-badge-pill"
                 style={{
                   fontSize: '10px',
                   background: 'var(--color-champagne)',
@@ -219,6 +221,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Cart Trigger */}
           <button
             onClick={onOpenCart}
+            className="bag-nav-btn"
             style={{
               background: '#FFFFFF',
               border: '1px solid var(--border-subtle)',
@@ -236,7 +239,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             }}
           >
             <ShoppingBag size={17} color="#C8A75A" />
-            <span>Bag</span>
+            <span className="bag-label">Bag</span>
             <span
               style={{
                 background: 'var(--color-graphite)',
@@ -319,6 +322,18 @@ export const Navbar: React.FC<NavbarProps> = ({
           .track-btn { display: inline-flex !important; }
           .signin-nav-btn { display: inline-flex !important; }
           .mobile-menu-btn { display: none !important; }
+        }
+        @media (max-width: 640px) {
+          .nav-actions-group { gap: 8px !important; }
+          .vip-nav-btn { padding: 6px 10px !important; font-size: 12px !important; }
+          .vip-badge-pill { display: none !important; }
+          .bag-nav-btn { padding: 6px 10px !important; gap: 6px !important; }
+          .bag-label { display: none !important; }
+        }
+        @media (max-width: 380px) {
+          .nav-actions-group { gap: 6px !important; }
+          .vip-nav-btn { padding: 5px 8px !important; font-size: 11px !important; }
+          .bag-nav-btn { padding: 5px 8px !important; }
         }
       `}</style>
     </header>

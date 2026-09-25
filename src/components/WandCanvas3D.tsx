@@ -572,6 +572,7 @@ export const WandCanvas3D: React.FC<WandCanvas3DProps> = ({ onInteract }) => {
           minHeight: '390px',
           cursor: 'grab',
           userSelect: 'none',
+          touchAction: 'pan-y',
         }}
         title="Click and drag to rotate in 3D"
       />

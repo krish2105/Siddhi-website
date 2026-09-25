@@ -35,7 +35,7 @@ export const TrackOrderModal: React.FC<TrackOrderModalProps> = ({ isOpen, onClos
     <div className="drawer-backdrop" onClick={onClose}>
       <div
         onClick={(e) => e.stopPropagation()}
-        className="glass-panel"
+        className="glass-panel track-modal-card"
         style={{
           position: 'fixed',
           top: '50%',
@@ -43,6 +43,8 @@ export const TrackOrderModal: React.FC<TrackOrderModalProps> = ({ isOpen, onClos
           transform: 'translate(-50%, -50%)',
           width: '90%',
           maxWidth: '520px',
+          maxHeight: '90vh',
+          overflowY: 'auto',
           padding: '32px',
           background: '#FFFFFF',
           zIndex: 1001,
@@ -108,6 +110,12 @@ export const TrackOrderModal: React.FC<TrackOrderModalProps> = ({ isOpen, onClos
           </div>
         )}
       </div>
+
+      <style>{`
+        @media (max-width: 640px) {
+          .track-modal-card { padding: 22px 16px !important; width: 94% !important; border-radius: 18px !important; }
+        }
+      `}</style>
     </div>
   );
 };

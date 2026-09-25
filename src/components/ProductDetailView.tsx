@@ -73,7 +73,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))',
             gap: '48px',
             alignItems: 'start',
             marginBottom: '64px',
@@ -82,7 +82,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
           {/* Left Column: Visual Media & 3D Interactive Stage */}
           <div>
             <div
-              className="glass-panel"
+              className="glass-panel pdp-media-panel"
               style={{
                 height: '460px',
                 position: 'relative',
@@ -634,6 +634,13 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
           </div>
         </div>
       )}
+
+      {/* Responsive mobile PDP styles */}
+      <style>{`
+        @media (max-width: 640px) {
+          .pdp-media-panel { height: 340px !important; }
+        }
+      `}</style>
     </div>
   );
 };

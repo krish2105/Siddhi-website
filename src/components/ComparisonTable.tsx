@@ -57,10 +57,32 @@ export const ComparisonTable: React.FC = () => {
           </p>
         </div>
 
+        {/* Mobile Swipe Hint Badge */}
+        <div
+          className="comparison-swipe-hint"
+          style={{
+            display: 'none',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            fontSize: '12px',
+            color: '#9B7830',
+            fontWeight: 700,
+            background: 'rgba(200, 167, 90, 0.12)',
+            padding: '6px 14px',
+            borderRadius: '9999px',
+            width: 'fit-content',
+            margin: '0 auto 16px auto',
+          }}
+        >
+          <span>👈 Swipe table to compare specs 👉</span>
+        </div>
+
         {/* Table Container */}
         <div
           style={{
             overflowX: 'auto',
+            WebkitOverflowScrolling: 'touch',
             borderRadius: 'var(--radius-hero)',
             border: '1px solid var(--border-subtle)',
             boxShadow: 'var(--shadow-md)',
@@ -123,6 +145,12 @@ export const ComparisonTable: React.FC = () => {
           </table>
         </div>
       </div>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .comparison-swipe-hint { display: inline-flex !important; }
+        }
+      `}</style>
     </section>
   );
 };
