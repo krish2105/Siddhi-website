@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
-import { ArrowLeft, ShieldCheck, Truck, Check, QrCode, CreditCard, Banknote, Sparkles, Lock, ArrowRight } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ArrowLeft, ShieldCheck, Check, QrCode, CreditCard, Banknote, Sparkles, Lock, ArrowRight, MessageCircle, ExternalLink, Plane } from 'lucide-react';
 import { type ProductBundleConfig } from '../config/product.config';
 import { BRAND } from '../config/brand.config';
 import { formatINR } from '../lib/format';
 import { playMechanicalClick, playSlideSound, playChime } from '../lib/sound';
+import { processPayment } from '../lib/commerce/gateway';
+import { generateWhatsAppOrderUrl, triggerWhatsAppWebhook } from '../lib/commerce/whatsapp';
+import { checkPincodeServiceability, type ServiceabilityResult } from '../lib/commerce/logistics';
+import { trackInitiateCheckout, trackPurchase } from '../lib/analytics';
 
 interface CheckoutViewProps {
   selectedBundle: ProductBundleConfig;
@@ -32,17 +36,21 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
   const [pincode, setPincode] = useState('400001');
   const [city, setCity] = useState('Mumbai, MH');
   const [upiId, setUpiId] = useState('');
+  const [serviceability, setServiceability] = useState<ServiceabilityResult>(checkPincodeServiceability('400001'));
 
-  // Handle PIN code lookup simulation
+  // Track InitiateCheckout on mount
+  useEffect(() => {
+    trackInitiateCheckout(selectedBundle.name, selectedBundle.price * quantity, quantity);
+  }, []);
+
+  // Handle PIN code lookup simulation & real logistics serviceability
   const handlePincodeChange = (pin: string) => {
     setPincode(pin);
-    if (pin.startsWith('11') || pin.startsWith('12')) setCity('New Delhi, DL');
-    else if (pin.startsWith('40') || pin.startsWith('41')) setCity('Mumbai / Pune, MH');
-    else if (pin.startsWith('56') || pin.startsWith('57')) setCity('Bengaluru, KA');
-    else if (pin.startsWith('50') || pin.startsWith('51')) setCity('Hyderabad, TS');
-    else if (pin.startsWith('60') || pin.startsWith('61')) setCity('Chennai, TN');
-    else if (pin.startsWith('70')) setCity('Kolkata, WB');
-    else if (pin.length === 6) setCity('Express Hub, IN');
+    const result = checkPincodeServiceability(pin);
+    setServiceability(result);
+    if (result.city && result.state) {
+      setCity(`${result.city}, ${result.state}`);
+    }
   };
 
   const upiDiscount = paymentMethod === 'upi' ? 100 : 0;
@@ -51,22 +59,68 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
   const originalTotalPrice = selectedBundle.originalPrice * quantity;
   const totalSavings = originalTotalPrice - totalPrice;
 
-  const handleSubmitOrder = (e: React.FormEvent) => {
+  const handleSubmitOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     playMechanicalClick();
     setIsSubmitting(true);
 
-    setTimeout(() => {
-      const orderId = `AUR-${Math.floor(10000 + Math.random() * 90000)}`;
-      setGeneratedOrderId(orderId);
+    const orderId = `AUR-${Math.floor(10000 + Math.random() * 90000)}`;
+
+    // Call Unified Payment Gateway (Razorpay SDK or Sandbox fallback)
+    const paymentResult = await processPayment({
+      orderId,
+      amountINR: totalPrice,
+      customerName: fullName || 'Valued Customer',
+      customerEmail: email || 'client@aurelle.in',
+      customerPhone: phone || '9820012345',
+      bundleName: selectedBundle.name,
+      paymentMethod,
+    });
+
+    if (!paymentResult.success) {
       setIsSubmitting(false);
-      setIsSuccess(true);
-      playChime();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 1200);
+      alert(paymentResult.message || 'Payment could not be completed.');
+      return;
+    }
+
+    // Trigger Dual WhatsApp Pipeline (Cloud webhook + ready-to-click concierge link)
+    const orderDetails = {
+      orderId,
+      customerName: fullName || 'Valued Customer',
+      customerPhone: phone || '+91 Client',
+      bundleName: selectedBundle.name,
+      quantity,
+      totalINR: totalPrice,
+      paymentMethod: paymentResult.method,
+      address,
+      city,
+      pincode,
+    };
+
+    triggerWhatsAppWebhook(orderDetails);
+    trackPurchase(orderId, selectedBundle.name, totalPrice, quantity);
+
+    setGeneratedOrderId(orderId);
+    setIsSubmitting(false);
+    setIsSuccess(true);
+    playChime();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   if (isSuccess) {
+    const whatsappUrl = generateWhatsAppOrderUrl({
+      orderId: generatedOrderId,
+      customerName: fullName || 'Valued Customer',
+      customerPhone: phone || '+91 Client',
+      bundleName: selectedBundle.name,
+      quantity,
+      totalINR: totalPrice,
+      paymentMethod: paymentMethod === 'cod' ? 'Cash on Delivery' : paymentMethod.toUpperCase(),
+      address,
+      city,
+      pincode,
+    });
+
     return (
       <div style={{ padding: '60px 0', minHeight: '80vh', display: 'flex', alignItems: 'center' }}>
         <div className="container" style={{ maxWidth: '680px' }}>
@@ -99,10 +153,10 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
             </div>
 
             <span style={{ fontSize: '11px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--color-champagne)' }}>
-              ORDER CONFIRMED &amp; DISPATCHED
+              ORDER CONFIRMED &amp; DISPATCHED VIA BLUE DART AIR
             </span>
 
-            <h2 style={{ fontSize: '28px', fontWeight: 800, marginTop: '6px', marginBottom: '8px' }}>
+            <h2 style={{ fontSize: '28px', fontWeight: 800, marginTop: '6px', marginBottom: '8px', color: 'var(--color-graphite)' }}>
               Thank You, {fullName || 'Valued Customer'}!
             </h2>
 
@@ -128,28 +182,42 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
               <div style={{ fontSize: '13px', color: 'var(--color-lilac-deep)', marginBottom: '8px' }}>
                 Delivery to: <strong>{address}, {city} - {pincode}</strong>
               </div>
+              <div style={{ fontSize: '13px', color: 'var(--color-lilac-deep)', marginBottom: '8px' }}>
+                Carrier: <strong>{serviceability.carrier} (Air Waybill #{generatedOrderId.replace('AUR-', 'BD847')}IN)</strong>
+              </div>
               <div style={{ fontSize: '13px', color: 'var(--color-lilac-deep)' }}>
                 Payment Method: <strong>{paymentMethod === 'cod' ? 'Cash on Delivery (₹0 extra)' : paymentMethod === 'upi' ? 'UPI Instant Pay' : 'Credit/Debit Card'}</strong>
               </div>
             </div>
 
-            {/* WhatsApp notification card */}
-            <div
-              style={{
-                background: '#EDF7F4',
-                borderRadius: '12px',
-                padding: '14px 18px',
-                border: '1px solid rgba(47, 125, 107, 0.3)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                textAlign: 'left',
-                marginBottom: '28px',
-              }}
-            >
-              <Sparkles size={20} color="#2F7D6B" style={{ flexShrink: 0 }} />
-              <div style={{ fontSize: '13px', color: '#1B5446' }}>
-                Live dispatch updates &amp; BlueDart Air airway bill tracking sent to <strong>{phone || '+91 WhatsApp'}</strong>.
+            {/* 1-Click WhatsApp Verification & Concierge Button */}
+            <div style={{ marginBottom: '24px' }}>
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => playMechanicalClick()}
+                style={{
+                  background: '#25D366',
+                  color: '#FFFFFF',
+                  padding: '16px 32px',
+                  borderRadius: '9999px',
+                  fontWeight: 800,
+                  fontSize: '15px',
+                  textDecoration: 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  boxShadow: '0 6px 20px rgba(37, 211, 102, 0.35)',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                <MessageCircle size={20} />
+                <span>Verify &amp; Receive Dispatch Updates on WhatsApp</span>
+                <ExternalLink size={14} />
+              </a>
+              <div style={{ fontSize: '11px', color: 'var(--color-lilac-deep)', marginTop: '8px' }}>
+                Instant order receipt, Blue Dart air consignment tracking, and VIP concierge direct line.
               </div>
             </div>
 
@@ -160,7 +228,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                   className="btn-primary"
                   style={{ padding: '14px 28px', fontSize: '14px' }}
                 >
-                  Track Order Status
+                  Track Air Waybill Status
                 </button>
               )}
               <button
@@ -380,9 +448,27 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                   </div>
                 </div>
 
-                <div style={{ marginTop: '10px', fontSize: '12px', color: '#2F7D6B', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600 }}>
-                  <Truck size={14} />
-                  <span>BlueDart Air Express available • Estimated delivery in 2 business days</span>
+                <div
+                  style={{
+                    marginTop: '12px',
+                    padding: '12px 14px',
+                    borderRadius: '10px',
+                    background: '#EDF7F4',
+                    border: '1px solid rgba(47, 125, 107, 0.25)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    flexWrap: 'wrap',
+                    gap: '8px',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#1B5446', fontWeight: 700 }}>
+                    <Plane size={15} color="#2F7D6B" />
+                    <span>{serviceability.carrier} • {serviceability.estimatedDays}</span>
+                  </div>
+                  <div style={{ fontSize: '11px', color: '#2F7D6B', fontWeight: 600 }}>
+                    Hub: {serviceability.hubLocation}
+                  </div>
                 </div>
               </div>
 

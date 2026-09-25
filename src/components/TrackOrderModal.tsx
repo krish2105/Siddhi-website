@@ -1,35 +1,35 @@
 import React, { useState } from 'react';
-import { X, Search, CheckCircle2 } from 'lucide-react';
+import { X, Search, CheckCircle2, Truck, Plane, MapPin, MessageCircle, ExternalLink } from 'lucide-react';
 import { BRAND } from '../config/brand.config';
+import { getOrderTrackingData, type TrackingResult } from '../lib/commerce/logistics';
+import { playMechanicalClick, playSlideSound } from '../lib/sound';
 
 interface TrackOrderModalProps {
   isOpen: boolean;
   onClose: () => void;
+  initialOrderId?: string;
 }
 
-export const TrackOrderModal: React.FC<TrackOrderModalProps> = ({ isOpen, onClose }) => {
-  const [orderQuery, setOrderQuery] = useState('');
-  const [trackResult, setTrackResult] = useState<any | null>(null);
+export const TrackOrderModal: React.FC<TrackOrderModalProps> = ({ isOpen, onClose, initialOrderId }) => {
+  const [orderQuery, setOrderQuery] = useState(initialOrderId || '');
+  const [trackResult, setTrackResult] = useState<TrackingResult | null>(
+    initialOrderId ? getOrderTrackingData(initialOrderId) : null
+  );
 
   if (!isOpen) return null;
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
+    playMechanicalClick();
     if (orderQuery.trim()) {
-      setTrackResult({
-        orderId: orderQuery.toUpperCase().startsWith('AUR-') ? orderQuery.toUpperCase() : `AUR-${orderQuery.trim()}`,
-        status: 'In Transit with Blue Dart Air',
-        destination: 'Mumbai, Maharashtra',
-        estimatedDelivery: 'Tomorrow by 4:00 PM',
-        steps: [
-          { title: 'Order Confirmed & Quality Checked', time: 'Yesterday 3:15 PM', done: true },
-          { title: 'Handed to Air Express Courier', time: 'Yesterday 8:40 PM', done: true },
-          { title: 'Arrived at Local Sorting Hub', time: 'Today 6:20 AM', done: true },
-          { title: 'Out for Delivery', time: 'Pending Dispatch', done: false },
-        ],
-      });
+      const data = getOrderTrackingData(orderQuery.trim());
+      setTrackResult(data);
     }
   };
+
+  const whatsappConciergeUrl = `https://wa.me/919820012345?text=${encodeURIComponent(
+    `Hello Aurelle Concierge, I am inquiring about tracking status for order #${trackResult?.orderId || orderQuery || 'AUR-GENERAL'}`
+  )}`;
 
   return (
     <div className="drawer-backdrop" onClick={onClose}>
@@ -41,81 +41,183 @@ export const TrackOrderModal: React.FC<TrackOrderModalProps> = ({ isOpen, onClos
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: '90%',
-          maxWidth: '520px',
+          width: '92%',
+          maxWidth: '560px',
           maxHeight: '90vh',
           overflowY: 'auto',
           padding: '32px',
           background: '#FFFFFF',
           zIndex: 1001,
           borderRadius: '24px',
+          border: '1px solid var(--border-subtle)',
+          boxShadow: 'var(--shadow-xl)',
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-          <h3 style={{ fontSize: '20px', fontWeight: 700 }}>Track Your {BRAND.name} Order</h3>
-          <button onClick={onClose} style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: '4px' }}>
+          <div>
+            <span style={{ fontSize: '11px', fontWeight: 800, color: 'var(--color-champagne)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+              BLUE DART AIR CARGO TRACKING
+            </span>
+            <h3 style={{ fontSize: '22px', fontWeight: 800, color: 'var(--color-graphite)', marginTop: '2px' }}>
+              Track Your {BRAND.name} Order
+            </h3>
+          </div>
+          <button
+            onClick={() => {
+              playSlideSound();
+              onClose();
+            }}
+            style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: '6px' }}
+          >
             <X size={20} color="var(--color-lilac-deep)" />
           </button>
         </div>
 
-        <p style={{ fontSize: '13px', color: 'var(--color-lilac-deep)', marginBottom: '20px' }}>
-          Enter your 6-digit Order ID (e.g. AUR-98241) or registered 10-digit mobile number to view live shipment milestones.
+        <p style={{ fontSize: '13px', color: 'var(--color-lilac-deep)', marginBottom: '20px', lineHeight: 1.5 }}>
+          Enter your Order ID (e.g. <strong>AUR-98241</strong>) or 10-digit mobile number to view real-time Blue Dart Air Waybill milestones.
         </p>
 
         <form onSubmit={handleSearch} style={{ display: 'flex', gap: '8px', marginBottom: '24px' }}>
           <input
             type="text"
             required
-            placeholder="Order ID or Mobile Number"
+            placeholder="e.g. AUR-98241 or 9820012345"
             value={orderQuery}
             onChange={(e) => setOrderQuery(e.target.value)}
             style={{
               flex: 1,
-              padding: '12px 14px',
-              borderRadius: '10px',
+              padding: '12px 16px',
+              borderRadius: '12px',
               border: '1px solid var(--border-subtle)',
               fontSize: '14px',
+              background: '#FAF9FD',
             }}
           />
-          <button type="submit" className="btn-primary" style={{ padding: '12px 20px', fontSize: '14px' }}>
-            <Search size={16} /> Track
+          <button
+            type="submit"
+            className="btn-primary"
+            style={{ padding: '12px 22px', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '6px' }}
+          >
+            <Search size={15} /> Track
           </button>
         </form>
 
         {trackResult && (
-          <div style={{ background: '#F5F5F8', borderRadius: '16px', padding: '20px', border: '1px solid var(--border-subtle)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
+          <div style={{ background: '#FAF9FD', borderRadius: '18px', padding: '24px', border: '1px solid var(--border-subtle)' }}>
+            {/* Header info */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px', flexWrap: 'wrap', gap: '10px' }}>
               <div>
-                <span style={{ fontSize: '12px', color: 'var(--color-lilac-deep)' }}>Shipment Identifier</span>
-                <strong style={{ fontSize: '15px', display: 'block' }}>{trackResult.orderId}</strong>
+                <span style={{ fontSize: '11px', color: 'var(--color-lilac-deep)', fontWeight: 700 }}>
+                  AIR WAYBILL (AWB) NUMBER
+                </span>
+                <div style={{ fontSize: '16px', fontWeight: 800, color: 'var(--color-graphite)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <Plane size={15} color="#C8A75A" />
+                  <span>{trackResult.awbNumber}</span>
+                </div>
               </div>
-              <span style={{ fontSize: '12px', color: 'var(--color-signal)', fontWeight: 700, background: '#EAF5F2', padding: '4px 10px', borderRadius: '6px' }}>
-                {trackResult.status}
+              <span
+                style={{
+                  fontSize: '11px',
+                  color: '#2F7D6B',
+                  fontWeight: 800,
+                  background: '#EDF7F4',
+                  border: '1px solid rgba(47, 125, 107, 0.3)',
+                  padding: '4px 12px',
+                  borderRadius: '9999px',
+                }}
+              >
+                {trackResult.status.toUpperCase()}
               </span>
             </div>
 
-            <div style={{ fontSize: '13px', marginBottom: '16px' }}>
-              <strong>Expected Delivery:</strong> {trackResult.estimatedDelivery}
+            <div style={{ background: '#FFFFFF', padding: '12px 16px', borderRadius: '12px', border: '1px solid var(--border-subtle)', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ fontSize: '13px' }}>
+                <span style={{ color: 'var(--color-lilac-deep)' }}>Carrier:</span> <strong>{trackResult.carrier}</strong>
+              </div>
+              <div style={{ fontSize: '13px' }}>
+                <span style={{ color: 'var(--color-lilac-deep)' }}>Delivery:</span> <strong style={{ color: '#2F7D6B' }}>{trackResult.estimatedDeliveryDate}</strong>
+              </div>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {trackResult.steps.map((st: any, i: number) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '13px' }}>
-                  <CheckCircle2 size={16} color={st.done ? '#2F7D6B' : '#C8A75A'} />
-                  <span style={{ flex: 1, color: st.done ? 'var(--color-graphite)' : 'var(--color-lilac-deep)' }}>{st.title}</span>
-                  <span style={{ fontSize: '11px', color: 'var(--color-lilac-deep)' }}>{st.time}</span>
+            {/* Milestones timeline */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '18px', position: 'relative' }}>
+              {trackResult.milestones.map((step, idx) => (
+                <div key={idx} style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
+                  <div style={{ marginTop: '2px', flexShrink: 0 }}>
+                    {step.completed ? (
+                      <CheckCircle2 size={18} color="#2F7D6B" />
+                    ) : step.active ? (
+                      <div
+                        style={{
+                          width: '18px',
+                          height: '18px',
+                          borderRadius: '50%',
+                          background: 'var(--color-champagne)',
+                          boxShadow: '0 0 10px rgba(200, 167, 90, 0.6)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                      >
+                        <Truck size={10} color="#FFF" />
+                      </div>
+                    ) : (
+                      <div
+                        style={{
+                          width: '18px',
+                          height: '18px',
+                          borderRadius: '50%',
+                          border: '2px solid #D2D0DF',
+                          background: '#FFF',
+                        }}
+                      />
+                    )}
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2px' }}>
+                      <strong style={{ fontSize: '13px', color: step.completed || step.active ? 'var(--color-graphite)' : 'var(--color-lilac-deep)' }}>
+                        {step.title}
+                      </strong>
+                      <span style={{ fontSize: '11px', color: 'var(--color-lilac-deep)' }}>
+                        {step.timestamp}
+                      </span>
+                    </div>
+                    <div style={{ fontSize: '11px', color: '#8E8B9F', display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '2px' }}>
+                      <MapPin size={11} /> {step.location}
+                    </div>
+                    <div style={{ fontSize: '12px', color: 'var(--color-lilac-deep)', lineHeight: 1.4 }}>
+                      {step.desc}
+                    </div>
+                  </div>
                 </div>
               ))}
+            </div>
+
+            {/* WhatsApp Live Concierge Support Link */}
+            <div style={{ marginTop: '24px', paddingTop: '18px', borderTop: '1px solid var(--border-subtle)', textAlign: 'center' }}>
+              <a
+                href={whatsappConciergeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => playMechanicalClick()}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  fontSize: '13px',
+                  fontWeight: 700,
+                  color: '#25D366',
+                  textDecoration: 'none',
+                }}
+              >
+                <MessageCircle size={16} />
+                <span>Need expedited delivery assistance? Chat on WhatsApp</span>
+                <ExternalLink size={12} />
+              </a>
             </div>
           </div>
         )}
       </div>
-
-      <style>{`
-        @media (max-width: 640px) {
-          .track-modal-card { padding: 22px 16px !important; width: 94% !important; border-radius: 18px !important; }
-        }
-      `}</style>
     </div>
   );
 };

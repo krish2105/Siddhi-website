@@ -30,6 +30,7 @@ import { VipLoginModal } from './components/VipLoginModal';
 import { AuthView } from './components/AuthView';
 import { RagChatbot } from './components/RagChatbot';
 import { PRODUCT, type ProductBundleConfig } from './config/product.config';
+import { initAnalytics, trackPageView } from './lib/analytics';
 
 export function App() {
   const [currentView, setCurrentView] = useState<'home' | 'product' | 'refills' | 'ritual' | 'science' | 'hospitality' | 'checkout' | 'auth'>('home');
@@ -43,6 +44,14 @@ export function App() {
   const [vipUserPhone, setVipUserPhone] = useState<string | null>(null);
   const [chatbotQuery, setChatbotQuery] = useState<string | null>(null);
   const [policyModalTab, setPolicyModalTab] = useState<'shipping' | 'returns' | 'privacy' | 'terms' | null>(null);
+
+  useEffect(() => {
+    initAnalytics();
+  }, []);
+
+  useEffect(() => {
+    trackPageView(currentView);
+  }, [currentView]);
 
   useEffect(() => {
     try {
