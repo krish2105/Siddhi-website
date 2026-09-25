@@ -28,6 +28,7 @@ export const StickyMobileBar: React.FC<StickyMobileBarProps> = ({
 
   return (
     <div
+      className="sticky-mobile-bar"
       style={{
         position: 'fixed',
         bottom: 0,

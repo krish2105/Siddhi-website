@@ -517,10 +517,11 @@ export const RagChatbot: React.FC<RagChatbotProps> = ({
       {/* Floating Concierge Launcher Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
+        className="aurelle-rag-launcher-btn"
         style={{
           position: 'fixed',
-          bottom: '24px',
-          right: '24px',
+          bottom: '28px',
+          right: '28px',
           zIndex: 990,
           background: 'var(--color-graphite)',
           color: '#FFFFFF',
@@ -578,10 +579,11 @@ export const RagChatbot: React.FC<RagChatbotProps> = ({
       {/* Slide-Up Chatbot Drawer */}
       {isOpen && (
         <div
+          className="aurelle-rag-drawer"
           style={{
             position: 'fixed',
-            bottom: '84px',
-            right: '24px',
+            bottom: '88px',
+            right: '28px',
             width: 'min(420px, calc(100vw - 32px))',
             height: 'min(580px, calc(100vh - 120px))',
             background: '#FFFFFF',
@@ -884,6 +886,26 @@ export const RagChatbot: React.FC<RagChatbotProps> = ({
           </form>
         </div>
       )}
+
+      {/* Responsive mobile positioning style */}
+      <style>{`
+        @media (max-width: 768px) {
+          .aurelle-rag-launcher-btn {
+            bottom: 84px !important;
+            right: 16px !important;
+            padding: 9px 13px !important;
+          }
+          .aurelle-rag-drawer {
+            bottom: 80px !important;
+            right: 12px !important;
+            left: 12px !important;
+            width: calc(100vw - 24px) !important;
+            max-width: none !important;
+            height: calc(100vh - 150px) !important;
+            max-height: 560px !important;
+          }
+        }
+      `}</style>
     </>
   );
 };

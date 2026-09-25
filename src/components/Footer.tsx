@@ -179,6 +179,29 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPolicy, onNavigate }) => {
                   Member Sign In &amp; Security Portal →
                 </button>
               </li>
+              <li>
+                <a
+                  href="/Aurelle_Luxe_Store_Official_Quotation_INR.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    color: '#FFFFFF',
+                    textDecoration: 'none',
+                    fontSize: '13px',
+                    fontWeight: 700,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    background: 'rgba(200, 167, 90, 0.15)',
+                    padding: '4px 10px',
+                    borderRadius: '6px',
+                    border: '1px solid rgba(200, 167, 90, 0.4)',
+                  }}
+                >
+                  <span>📄 Official Quotation PDF</span>
+                  <span style={{ fontSize: '10px', color: 'var(--color-champagne)' }}>₹2.15L</span>
+                </a>
+              </li>
             </ul>
           </div>
 

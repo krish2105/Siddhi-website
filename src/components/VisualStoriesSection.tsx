@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Play, Pause, Volume2, VolumeX, X, ShoppingBag, ArrowLeft, ArrowRight, Sparkles, UploadCloud, CheckCircle2, Copy } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { BRAND } from '../config/brand.config';
@@ -23,12 +23,34 @@ interface VisualStoriesSectionProps {
 }
 
 export const VisualStoriesSection: React.FC<VisualStoriesSectionProps> = ({ onOpenCart }) => {
+  const sectionRef = useRef<HTMLElement>(null);
   const [activeModalStory, setActiveModalStory] = useState<StoryReel | null>(null);
   const [playingCardId, setPlayingCardId] = useState<string | null>('reel-3');
   const [modalPlaying, setModalPlaying] = useState<boolean>(true);
   const [modalMuted, setModalMuted] = useState<boolean>(true);
   const [modalProgress, setModalProgress] = useState<number>(18);
-  const [showFloatingPill, setShowFloatingPill] = useState<boolean>(true);
+  const [showFloatingPill, setShowFloatingPill] = useState<boolean>(false);
+  const [dismissedPill, setDismissedPill] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (dismissedPill) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !dismissedPill) {
+            setShowFloatingPill(true);
+          } else {
+            setShowFloatingPill(false);
+          }
+        });
+      },
+      { threshold: 0.12 }
+    );
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+    return () => observer.disconnect();
+  }, [dismissedPill]);
 
   // Patron Video Upload States
   const [isUploadOpen, setIsUploadOpen] = useState<boolean>(false);
@@ -205,6 +227,7 @@ export const VisualStoriesSection: React.FC<VisualStoriesSectionProps> = ({ onOp
 
   return (
     <section
+      ref={sectionRef}
       id="visual-stories"
       style={{
         padding: '80px 0 60px 0',
@@ -1118,13 +1141,14 @@ export const VisualStoriesSection: React.FC<VisualStoriesSectionProps> = ({ onOp
         </div>
       )}
 
-      {/* Floating Mini Product Pill */}
+      {/* Floating Mini Product Pill (Bottom-Left to avoid Chatbot collision) */}
       {showFloatingPill && (
         <div
+          className="floating-mini-pill"
           style={{
             position: 'fixed',
-            bottom: '24px',
-            right: '24px',
+            bottom: '28px',
+            left: '28px',
             zIndex: 90,
             background: '#FFFFFF',
             borderRadius: '16px',
@@ -1158,10 +1182,10 @@ export const VisualStoriesSection: React.FC<VisualStoriesSectionProps> = ({ onOp
             </div>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
               <span style={{ fontSize: '13px', fontWeight: 800, color: 'var(--color-graphite)' }}>
-                Rs. 1,599.00
+                ₹1,599
               </span>
               <span style={{ fontSize: '11px', textDecoration: 'line-through', color: 'var(--color-lilac-deep)' }}>
-                Rs. 2,799.00
+                ₹2,799
               </span>
             </div>
           </div>
@@ -1195,7 +1219,10 @@ export const VisualStoriesSection: React.FC<VisualStoriesSectionProps> = ({ onOp
           </button>
 
           <button
-            onClick={() => setShowFloatingPill(false)}
+            onClick={() => {
+              setShowFloatingPill(false);
+              setDismissedPill(true);
+            }}
             aria-label="Dismiss quick buy bar"
             style={{
               background: 'transparent',
@@ -1210,6 +1237,15 @@ export const VisualStoriesSection: React.FC<VisualStoriesSectionProps> = ({ onOp
           </button>
         </div>
       )}
+
+      {/* Responsive Style to prevent any mobile collision */}
+      <style>{`
+        @media (max-width: 768px) {
+          .floating-mini-pill {
+            display: none !important;
+          }
+        }
+      `}</style>
     </section>
   );
 };
