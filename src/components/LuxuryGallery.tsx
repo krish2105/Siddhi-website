@@ -25,30 +25,30 @@ export const LuxuryGallery: React.FC = () => {
     {
       title: 'The Presentation Box & Unboxing',
       subtitle: 'Apple & Aesop-Grade Packaging Experience',
-      image: '/assets/aurelle_unboxing.jpg',
+      image: '/images/aurelle_unboxing_presentation.jpg',
       tag: 'UNBOXING RITUAL',
       description:
-        'Crafted from 100% recycled rigid board with debossed champagne gold typography. Inside: molded pulp cradle holding the wall caddy, wand, starter pod tubes, and a gold-foil QR welcome card.',
+        'Crafted from rigid charcoal-black linen with deep emerald crushed velvet. Inside: molded cradle cradling the knurled champagne gold wand, amber scent pods, and a solid brass authenticity certificate.',
       specs: [
-        'Custom molded biodegradable pulp cradle',
-        'Laser-etched metallic reorder welcome card',
+        'Emerald velvet cradle with laser-engraved solid brass certificate',
+        'Amber glass essence vials with gold-capped airtight seals',
         'Zero single-use plastic wrap or non-recyclable foams',
       ],
-      architecturalSetting: 'Rigid Presentation Gift Box & Matte Finish',
+      architecturalSetting: 'Rigid Linen Presentation Gift Box & Crushed Velvet',
     },
     {
-      title: 'The Refill Ritual: Amber Glass & Linen',
-      subtitle: 'Artisanal Countertop Display',
-      image: '/assets/aurelle_refill_ritual.jpg',
-      tag: 'DAILY RITUAL',
+      title: 'Haute Olfactory Botanical Formulation',
+      subtitle: 'Cold-Pressed Essential Perfumery Notes',
+      image: '/images/aurelle_olfactory_ingredients.jpg',
+      tag: 'AESOP-GRADE PERFUMERY',
       description:
-        'Refill pods arrive in raw unbleached natural linen pouches with debossed metallic logo. Transfer seamlessly into fluted amber glass apothecary canisters for an elevated countertop presence.',
+        'Raw Italian bergamot slices, Japanese hinoki cypress wood, wild French lavender, and grey sea salt crystals on Nero Marquina marble. Eliminates artificial chemical bleach smells forever.',
       specs: [
-        'Natural unbleached linen storage pouch',
-        'Moisture-sealed enzymatic bio-film capsules',
-        'Eliminates ugly chemical detergent bottles under the sink',
+        'Pure cold-pressed citrus and coniferous essential extracts',
+        'Active water-dissolving micro-bubbles with zero chlorine fumes',
+        'Replaces synthetic aerosol sprays with quiet luxury botanicals',
       ],
-      architecturalSetting: 'Amber Apothecary Canisters & Fluted Glass',
+      architecturalSetting: 'Nero Marquina Marble & Raw Botanicals',
     },
     {
       title: 'Effervescent Foaming Micro-Bubbles',
@@ -93,18 +93,18 @@ export const LuxuryGallery: React.FC = () => {
       architecturalSetting: 'Vertical Fluted Marble & Warm LED Cove',
     },
     {
-      title: 'Travertine Master Bathroom Setting',
-      subtitle: 'Natural Sunlight & Stone Textures',
-      image: '/assets/aurelle_hero_travertine.jpg',
+      title: 'Travertine Master Bathroom Suite',
+      subtitle: 'Natural Sunrise & Monolithic Stone Textures',
+      image: '/images/aurelle_master_bathroom_editorial.jpg',
       tag: 'ARCHITECTURAL DIGEST',
       description:
-        'Engineered to complement limestone, travertine, and micro-cement bathrooms. Designed to disappear elegantly next to modern wall-hung sanitary ware.',
+        'Sunlight pouring through fluted glass screens onto honed Italian travertine and a freestanding stone bath. Aurelle rests on a floating stone vanity with a gentle warm halo charging dock.',
       specs: [
         'Coordinates seamlessly with Kohler, Grohe, Axor & Toto',
-        'Compact 90 × 120 mm footprint keeps floors clear',
-        'Floor-clearance design enables effortless robotic vacuuming',
+        'Compact 90 × 120 mm footprint with floating vanity clearance',
+        'Engineered for honed travertine, slate, and bookmatched marble',
       ],
-      architecturalSetting: 'Honed Roman Travertine & Minimalist Joinery',
+      architecturalSetting: 'Honed Roman Travertine & Fluted Glass Screen',
     },
   ];
 

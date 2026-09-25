@@ -24,6 +24,7 @@ import { TrackOrderModal } from './components/TrackOrderModal';
 import { PoliciesModal } from './components/PoliciesModal';
 import { ArPreviewModal } from './components/ArPreviewModal';
 import { ArchitecturalSpecStudio } from './components/ArchitecturalSpecStudio';
+import { OlfactoryScentStudio } from './components/OlfactoryScentStudio';
 import { CheckoutView } from './components/CheckoutView';
 import { VipLoginModal } from './components/VipLoginModal';
 import { AuthView } from './components/AuthView';
@@ -171,7 +172,15 @@ export function App() {
             {/* 4. Architectural Photography & Editorial Unboxing Gallery */}
             <LuxuryGallery />
 
-            {/* 4b. Visual Stories Unfold: Vertical UGC Video Reels (Suvaam Reference) */}
+            {/* 4b. Aesop-Inspired Olfactory Scent Studio */}
+            <OlfactoryScentStudio
+              onAddScentToCart={(_scent) => {
+                setCartCount((prev) => prev + 1);
+                setIsCartOpen(true);
+              }}
+            />
+
+            {/* 4c. Visual Stories Unfold: Vertical UGC Video Reels (Suvaam Reference) */}
             <VisualStoriesSection onOpenCart={() => setIsCartOpen(true)} />
 
             {/* 5. Household Bathrooms & Refill Savings Calculator */}
